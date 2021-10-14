@@ -11,6 +11,7 @@
             block height="10vh" outlined v-bind:ripple="false"
             @click="clicked($event)"
             v-bind:id="'call-' + level + strain"
+            v-bind:disabled="invalid_bid(level, strain)"
           >
             <span v-html="level + icon" v-bind:class="'label-' + strain"></span>
           </v-btn>
@@ -23,6 +24,7 @@
             block height="10vh" outlined v-bind:ripple="false"
             v-bind:id="'call-rdbl'"
             @click="clicked($event)"
+            v-bind:disabled="this.cannot_rdbl"
           >
             <span>XX</span>
           </v-btn>
@@ -43,6 +45,7 @@
             block height="10vh" outlined v-bind:ripple="false"
             v-bind:id="'call-dbl'"
             @click="clicked($event)"
+            v-bind:disabled="this.cannot_dbl"
           >
             <span>X</span>
           </v-btn>
@@ -57,7 +60,18 @@ export default {
     return {
       levels: ['1', '2', '3', '4', '5', '6', '7'],
       strains: {'N': 'N', 'S': '&#9828;', 'H': '&#9825;', 'D': '&#9826;', 'C': '&#9831;'},
-      windowSize: {x: 0, y: 0}
+      windowSize: {x: 0, y: 0},
+    }
+  },
+  computed: {
+    last_bid_no: function(){
+      return 20  // dummy value
+    },
+    cannot_dbl: function(){
+      return false  // dummy value
+    },
+    cannot_rdbl: function(){
+      return true  // dummy value
     }
   },
   methods: {
@@ -66,6 +80,19 @@ export default {
     },
     onResize(){
       this.windowSize = { x: window.innerWidth, y: window.innerHeight }
+    },
+    bid_to_num(level, strain){
+      // 1C = 1, 7N = 35
+      var level_num = level.toString()
+      var strain_num = Object.keys(this.strains).indexOf(strain)
+      return level_num * 5 - strain_num
+    },
+    invalid_bid(level, strain){
+      if(this.bid_to_num(level, strain) < this.last_bid_no){
+        return true
+      } else {
+        return false
+      }
     }
   },
   mounted (){
@@ -82,14 +109,15 @@ export default {
 .label-D {color: orange;}
 .label-C {color: green;}
 
+button[disabled="disabled"] span {
+  color: lightgrey;
+}
+
+.call-choice {padding: 0px !important;}
 
 .call-choice span{
   font-size: x-large; 
   font-weight: bold;
-  padding: 0px
 }
 
-.bidsvg_7{
-  /* float: right; */
-}
 </style>
