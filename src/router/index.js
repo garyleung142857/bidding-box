@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import BoxSelect from '../views/BoxSelect.vue'
+import BoxSelect2 from '../views/BoxSelect2.vue'
 
 Vue.use(VueRouter)
 
@@ -17,7 +19,9 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  }
+  },
+  {path: '/boxselect', name: 'BoxSelect', component: BoxSelect},
+  {path: '/boxselect2', name: 'BoxSelect2', component: BoxSelect2}
 ]
 
 const router = new VueRouter({
