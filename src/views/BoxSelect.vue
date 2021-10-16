@@ -1,5 +1,5 @@
 <template>
-    <v-container id="boxselect" v-resize="onResize">
+    <v-container id="boxselect">
       <v-row v-for="level in levels" :key="level" no-gutters>
         <v-col
           
@@ -22,7 +22,7 @@
           <v-btn
             class="call-choice"
             block height="10vh" outlined v-bind:ripple="false"
-            v-bind:id="'call-rdbl'"
+            v-bind:id="'call-R'"
             @click="clicked($event)"
             v-bind:disabled="this.cannot_rdbl"
           >
@@ -33,7 +33,7 @@
           <v-btn
             class="call-choice"
             block height="10vh" outlined v-bind:ripple="false"
-            v-bind:id="'call-pass'"
+            v-bind:id="'call-P'"
             @click="clicked($event)"
           >
             <span>Pass</span>
@@ -43,7 +43,7 @@
           <v-btn
             class="call-choice"
             block height="10vh" outlined v-bind:ripple="false"
-            v-bind:id="'call-dbl'"
+            v-bind:id="'call-X'"
             @click="clicked($event)"
             v-bind:disabled="this.cannot_dbl"
           >
@@ -56,48 +56,43 @@
 
 <script>
 export default {
+  name: 'BoxSelect',
+  props: {
+    biddingState: Array  // [lastBid: str, canDbl: bool, canRdbl: bool]
+  },
   data(){
     return {
       levels: ['1', '2', '3', '4', '5', '6', '7'],
       strains: {'N': 'N', 'S': '&#9828;', 'H': '&#9825;', 'D': '&#9826;', 'C': '&#9831;'},
-      windowSize: {x: 0, y: 0},
     }
   },
   computed: {
-    last_bid_no: function(){
-      return 20  // dummy value
+    last_bid: function(){
+      return this.biddingState[0]
     },
     cannot_dbl: function(){
-      return false  // dummy value
+      return !(this.biddingState[1])
     },
     cannot_rdbl: function(){
-      return true  // dummy value
+      return !(this.biddingState[2])
     }
   },
   methods: {
     clicked(event){
-      console.log(event.currentTarget.id)
-    },
-    onResize(){
-      this.windowSize = { x: window.innerWidth, y: window.innerHeight }
-    },
-    bid_to_num(level, strain){
-      // 1C = 1, 7N = 35
-      var level_num = level.toString()
-      var strain_num = Object.keys(this.strains).indexOf(strain)
-      return level_num * 5 - strain_num
+      var selected_call = event.currentTarget.id.replace('call-', '')
+      this.$emit('selectCall', selected_call)
     },
     invalid_bid(level, strain){
-      if(this.bid_to_num(level, strain) < this.last_bid_no){
-        return true
-      } else {
+      if(level < this.last_bid[0]){
+        return true 
+      } else if (level > this.last_bid[0]){
         return false
+      } else {
+        var k = Object.keys(this.strains)
+        return k.indexOf(strain) >= k.indexOf(this.last_bid[1])
       }
     }
   },
-  mounted (){
-    this.onResize()
-  }
 }
 </script>
 

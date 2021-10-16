@@ -4,8 +4,8 @@
     class="d-flex align-center justify-center ma-1"
   >
     <div
-      v-html="this.to_html(this.call)"
-      v-bind:class="'table-call label-' + this.to_strain(this.call)"
+      v-html="this.to_html(this.biddingCall)"
+      v-bind:class="'table-call label-' + this.to_strain(this.biddingCall)"
     ></div>
   </v-card>
 </template>
@@ -13,7 +13,7 @@
 <script>
 export default {
   name: 'Call',
-  props: ['call'],
+  props: {biddingCall: String},
   data(){
     return {
       levels: ['1', '2', '3', '4', '5', '6', '7'],
