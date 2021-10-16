@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import BoxSelect from '../views/BoxSelect.vue'
 // import BoxSelect2 from '../views/BoxSelect2.vue'
 import BiddingTable from '../views/BiddingTable.vue'
+import BiddingMain from '../views/BiddingMain.vue'
 
 Vue.use(VueRouter)
 
@@ -23,7 +24,8 @@ const routes = [
   },
   {path: '/boxselect', name: 'BoxSelect', component: BoxSelect},
   // {path: '/boxselect2', name: 'BoxSelect2', component: BoxSelect2},
-  {path: '/biddingtable', name: 'BiddingTable', component: BiddingTable}
+  {path: '/biddingtable', name: 'BiddingTable', component: BiddingTable},
+  {path: '/biddingmain', name: 'BiddingMain', component: BiddingMain}
 ]
 
 const router = new VueRouter({

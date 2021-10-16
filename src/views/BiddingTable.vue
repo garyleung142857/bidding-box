@@ -1,35 +1,35 @@
 <template>
-  <v-app>
-    <v-container id="biddingtable">
-        <v-row no-gutters>
-          <v-col
-            cols=2
-            v-for="(pname, key) in this.player_names"
-            v-bind:key="key"
-          >
-            <v-card
-              v-bind:class="'d-flex align-center justify-center ma-1 player-' + is_vul(key)"
-            >
-              <div>{{pname}}</div>
-            </v-card>
-          </v-col>
-        </v-row>
-        <v-row
-          v-for="(callrow, i) in this.hist_2d"
-          v-bind:key="i"
-          no-gutters
-        >
-          <v-col
-            cols=2
-            v-for="(call, j) in callrow"
-            v-bind:key="j"
-          >
-            <Call v-bind:call="call"></Call>
-          </v-col>
-        </v-row>
 
-    </v-container>
-  </v-app>
+  <v-container id="biddingtable">
+      <v-row no-gutters justify="center">
+        <v-col
+          cols=3
+          v-for="(pname, key) in this.player_names"
+          v-bind:key="key"
+        >
+          <v-card
+            v-bind:class="'d-flex align-center justify-center ma-1 player-' + is_vul(key)"
+          >
+            <div>{{pname}}</div>
+          </v-card>
+        </v-col>
+      </v-row>
+      <v-row
+        v-for="(callrow, i) in this.hist_2d"
+        v-bind:key="i"
+        no-gutters justify="center"
+      >
+        <v-col
+          cols=3
+          v-for="(call, j) in callrow"
+          v-bind:key="j"
+        >
+          <Call v-bind:call="call"></Call>
+        </v-col>
+      </v-row>
+
+  </v-container>
+
 </template>
 
 <script>
