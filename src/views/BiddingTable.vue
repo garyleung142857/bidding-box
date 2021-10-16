@@ -43,7 +43,8 @@ export default {
   props: {
     history: Array,
     boardNum: Number,
-    curPlayer: String
+    curPlayer: String,
+    ended: Boolean,
   },
   data(){
     return {
@@ -57,9 +58,12 @@ export default {
     },
     hist_2d: function(){
       var hist = [...this.history]
+      if (this.contract == null){
+        hist.push('A')  // A = pending
+      }
       var hist_2 = []
-      for (let i = 0; i < this.dlr_pos; i++){hist.splice(0, 0, '_')}  // West will be the first
-      while (hist.length % 4 > 0){hist.push('_')}  // multiple of 4      
+      for (let i = 0; i < this.dlr_pos; i++){hist.splice(0, 0, 'B')}  // West will be the first B = buffer
+      while (hist.length % 4 > 0){hist.push('E')}  // multiple of 4. E = blank      
       for (let j = 0; j < hist.length; j = j + 4){
         hist_2.push(hist.slice(j, j + 4))
       }

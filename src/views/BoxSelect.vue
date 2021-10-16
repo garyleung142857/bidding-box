@@ -83,7 +83,9 @@ export default {
       this.$emit('selectCall', selected_call)
     },
     invalid_bid(level, strain){
-      if(level < this.last_bid[0]){
+      if(this.last_bid === ''){
+        return false
+      } else if(level < this.last_bid[0]){
         return true 
       } else if (level > this.last_bid[0]){
         return false

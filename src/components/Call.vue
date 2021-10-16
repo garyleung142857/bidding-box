@@ -1,12 +1,13 @@
 <template>
   <v-card
+    elevation="0"
     height="7vh"
     class="d-flex align-center justify-center ma-1"
+    v-bind:class="this.to_class(this.biddingCall)"
   >
-    <div
+    <span
       v-html="this.to_html(this.biddingCall)"
-      v-bind:class="'table-call label-' + this.to_strain(this.biddingCall)"
-    ></div>
+    ></span>
   </v-card>
 </template>
 
@@ -23,27 +24,38 @@ export default {
   },
   methods: {
     to_html(str){
-      if(str === '_'){return ''}
+      if(['A', 'B', 'E'].includes(str)){return ''}
       if(str in this.pxr){return this.pxr[str]}
       return str[0] + this.strains[str[1]]
     },
-    to_strain(str){
-      // for css coloring. returns one of the 5 strains or pxr or _
-      if(str.length === 1){return str}
-      return str[1]
+    to_class(str){
+      // for css coloring
+      var class_list = ['table-label']
+      if(str.length === 2 || ['P', 'X', 'R'].includes(str)){
+        class_list.push(`label-${str[1]}`)
+        class_list.push('normal-label')
+      } else {
+        class_list.push(`label-${str}`)
+      }
+      return class_list
     }
   }
 }
 </script>
 
 <style scoped>
-  .label-N {color: black}
-  .label-S {color: blue;}
-  .label-H {color: red;}
-  .label-D {color: orange;}
-  .label-C {color: green;}
+  .label-N span {color: black;}
+  .label-S span {color: blue;}
+  .label-H span {color: red;}
+  .label-D span {color: orange;}
+  .label-C span {color: green;}
 
-  .table-call{
+  .normal-label {background-color: linen !important;}
+
+  .label-A {background-color: chartreuse !important;}
+  .label-B {background-color: lightgray !important;}
+
+  .table-label{
     font-size: x-large; 
     font-weight: bold;
   }
