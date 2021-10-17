@@ -154,9 +154,11 @@ export default {
 </script>
 
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap');
 
   #app, #control-footer {
     background-color: #f5e9d9;
+    font-family: 'Roboto', sans-serif;
   }
 
   #biddingtable {
@@ -184,7 +186,7 @@ export default {
 
   .label-P, .label-X, .label-R, .label-P span, .label-X span, .label-R span {color: #4a495e}
 
-  .table-label.label-P {background-color: #ccf7b9 !important;}
+  .table-label.label-P {background-color: #d7f8c9 !important;}
   .table-label.label-X {background-color: #fac2c2 !important;}
   .table-label.label-R {background-color: #c7cefc !important;}
 
