@@ -1,6 +1,5 @@
 <template>
   <v-card
-    elevation="0"
     height="7vh"
     class="d-flex align-center justify-center ma-1"
     v-bind:class="this.to_class(this.biddingCall)"
@@ -19,7 +18,7 @@ export default {
     return {
       levels: ['1', '2', '3', '4', '5', '6', '7'],
       strains: {'N': 'N', 'S': '&#9828;', 'H': '&#9825;', 'D': '&#9826;', 'C': '&#9831;'},
-      pxr : {'P': 'Pass', 'X': 'Dbl', 'R': 'Rdbl'}
+      pxr : {'P': 'P', 'X': 'X', 'R': 'XX'}
     }
   },
   methods: {
@@ -32,32 +31,11 @@ export default {
       // for css coloring
       var class_list = ['table-label']
       if(str.length === 2 || ['P', 'X', 'R'].includes(str)){
-        class_list.push(`label-${str[1]}`)
         class_list.push('normal-label')
-      } else {
-        class_list.push(`label-${str}`)
       }
+      class_list.push(`label-${str[str.length - 1]}`)
       return class_list
     }
   }
 }
 </script>
-
-<style scoped>
-  .label-N span {color: black;}
-  .label-S span {color: blue;}
-  .label-H span {color: red;}
-  .label-D span {color: orange;}
-  .label-C span {color: green;}
-
-  .normal-label {background-color: linen !important;}
-
-  .label-A {background-color: chartreuse !important;}
-  .label-B {background-color: lightgray !important;}
-
-  .table-label{
-    font-size: x-large; 
-    font-weight: bold;
-  }
-
-</style>

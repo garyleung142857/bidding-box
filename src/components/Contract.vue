@@ -1,12 +1,13 @@
 <template>
-  <div class="contract d-flex align-center justify-center ma-1">
+  <div>
     <template v-if="this.contract.declarer==null">Pass Out</template>
     <template v-else>
       <span
-        :class="'contract-' + this.contract.bid[1]"
+        :class="'label-' + this.contract.bid[1]"
         v-html="this.bid_to_html(this.contract.bid)"
       ></span>
-      <span>{{this.to_pxr(this.contract.pxr)}} by {{this.contract.declarer}}</span>
+      <span>{{this.to_pxr(this.contract.pxr)}}</span>
+      <span style="margin-left: 0.5em"> by {{this.contract.declarer}}</span>
     </template>
   </div>
 </template>
@@ -38,14 +39,3 @@ export default {
   }
 }
 </script>
-<style>
-  .contract-N {color: black}
-  .contract-S {color: blue;}
-  .contract-H {color: red;}
-  .contract-D {color: orange;}
-  .contract-C {color: green;}
-
-  .contract {
-    font-weight: bold;
-  }
-</style>
