@@ -44,8 +44,8 @@
 </template>
 
 <script>
-import BiddingTable from '@/views/BiddingTable.vue'
-import BoxSelect from '@/views/BoxSelect.vue'
+import BiddingTable from '@/components/BiddingTable.vue'
+import BoxSelect from '@/components/BoxSelect.vue'
 import Contract from '@/components/Contract.vue'
 
 export default {
@@ -56,7 +56,7 @@ export default {
   data(){
     return {
       PLAYERS: ['W', 'N', 'E', 'S'],
-      history: ['P', '1C', 'X', '1D', '1H', '1S', '1N', 'P'],
+      history: [],
       boardNum: 1,
       dialog: false
     }
