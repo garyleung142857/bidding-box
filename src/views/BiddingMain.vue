@@ -1,10 +1,11 @@
 <template>
-  <div>
+  <div v-resize="onResize">
     <BiddingTable
       :history="this.history"
       :boardNum="this.boardNum"
       :curPlayer="this.curPlayer"
       :ended="this.contract.bid != null"
+      :sideLength="this.sideLength"
     ></BiddingTable>
     <v-footer fixed padless id="control-footer">
       <v-row justify="center" no-gutters>
@@ -14,18 +15,17 @@
           </v-btn>
         </v-col>
         <v-col col=6 v-if="contract.bid == null">
-          <v-dialog v-model="dialog" width="90vw">
+          <v-dialog width="unset" v-model="dialog">
             <template v-slot:activator="{on, attrs}">
               <v-btn block id="call-button" class="d-flex align-center justify-center" v-bind="attrs" v-on="on">
                 <v-icon>mdi-arrow-up-box</v-icon>
               </v-btn>
             </template>
-            <v-card elevation=0>
-              <BoxSelect
-                @selectCall="addHistory($event); dialog=false"
-                :biddingState="biddingState"
-              ></BoxSelect>
-            </v-card>
+            <BoxSelect
+              @selectCall="addHistory($event); dialog=false"
+              :biddingState="biddingState"
+              :sideLength="this.sideLength"
+            ></BoxSelect>
           </v-dialog>
         </v-col>
         <v-col col=6 v-else>
@@ -58,7 +58,8 @@ export default {
       PLAYERS: ['W', 'N', 'E', 'S'],
       history: [],
       boardNum: 1,
-      dialog: false
+      dialog: false,
+      sideLength: null,
     }
   },
   computed: {
@@ -113,13 +114,17 @@ export default {
           }
         }
       }
-      return [lastBid, canDbl, canRdbl, contract]
+      return [this.curPlayer, lastBid, canDbl, canRdbl, contract]
     },
     contract: function(){
-      return this.biddingState[3]
+      return this.biddingState[4]
     }
   },
   methods: {
+    onResize: function(){
+      var len_of_largest_sq = Math.min(window.innerWidth, window.innerHeight * 0.9)
+      this.sideLength = len_of_largest_sq
+    },
     addHistory: function(call){
       this.history.push(call)
     },
@@ -149,6 +154,9 @@ export default {
         return call[1]
       }
     },
+  },
+  mounted(){
+    this.onResize()
   }
 }
 </script>
@@ -161,11 +169,6 @@ export default {
     font-family: 'Roboto', sans-serif;
   }
 
-  #biddingtable {
-    overflow-y: auto;
-    max-height: 90vh;
-  }
-
   #undo-button {background-color: #f88080;}
   #call-button {background-color: #9ba8eb}
   #advance-button {background-color: #a3e684;}
@@ -174,9 +177,10 @@ export default {
 
   #contract, .player-nv, .player-v, .call-choice span, .table-label {
     font-weight: bold;
+    max-width: unset
   }
 
-  #boxselect {background-color: #fcffee;}
+  .box-bids {background-color: #fcffee;}
 
   .label-N span, .label-N {color: #302f46;}
   .label-S span, .label-S {color: #2f3b80;}
@@ -202,9 +206,8 @@ export default {
 
   .bid-choice .normal-label #contract {background-color: #f5f5f5 !important;}
 
-  .label-A {border: #4a495e 3px solid !important;}
-  .label-A, .label-B, .label-E {
-    background-color: #f5e9d9 !important;
+  .label-B, .label-E {
+    background-color: transparent !important;
     box-shadow: none !important;
   }
 
@@ -221,5 +224,135 @@ export default {
   .call-choice {padding: 0px !important;}
 
   #contract, .call-choice span, .table-label{font-size: x-large;}
+
+  #biddingtable{
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: transparent;
+  }
+
+  .playertray {
+    margin: 3px;
+    padding: 3px;
+    vertical-align: text-bottom;
+    border-radius: 3px;
+    overflow-y: auto;
+    background-color: rgb(206, 211, 212) !important;
+  }
+
+  .tray-holder{
+    overflow: auto;
+  }
+
+  .playertray.current{
+    background-color: rgb(255, 254, 187) !important;
+  }
+
+  #playertray-S {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    transform: rotate(0deg);
+  }
+
+  #playertray-N {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: rotate(180deg);
+  }
+
+  #playertray-E {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: rotate(-90deg) translateY(-100%);
+    transform-origin: top right;
+  }
+
+  #playertray-W {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transform: rotate(90deg) translateX(-100%) ;
+    transform-origin: bottom left;
+  }
+
+  .table-label{
+    transform: rotate(180deg);
+  }
+
+  .tablecenter{
+    position: absolute;
+    transform: translate(-50%,-50%);
+    top: 50%;
+    left: 50%;
+  }
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  .name-tag{
+    position: absolute;
+  }
+
+  .name-tag#tag-N{
+    top: 0;
+    left: 50%;
+    transform: rotate(0deg) translateX(-50%);
+  }
+
+  .name-tag#tag-S{
+    bottom: 0;
+    left: 50%;
+    transform: rotate(180deg) translateX(50%);
+  }
+
+  .name-tag#tag-E{
+    top: 50%;
+    right: 0;
+    transform: rotate(90deg) translateX(50%);
+    transform-origin: top right;
+  }
+
+  .name-tag#tag-W{
+    top: 50%;
+    left: 0;
+    transform: rotate(-90deg) translateX(-50%);
+    transform-origin: top left;
+  }
+
+  .board-num{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: x-large;
+    font-weight: bold;
+  }
+
+  .box-bids{
+    padding: 0;
+    margin: 0;
+  }
+
+  .box-bids#W{
+    transform: rotate(90deg);
+  }
+
+  .box-bids#E{
+    transform: rotate(-90deg);
+  }
+
+  .box-bids#N{
+    transform: rotate(180deg);
+  }
+
+  .box-bids#S{
+    transform: rotate(0deg);
+  }
 
 </style>

@@ -1,49 +1,89 @@
 <template>
-
-  <v-container id="biddingtable">
-    <v-row no-gutters justify="center">
-      <v-col
-        cols=3
-        v-for="(pname, key) in this.player_names"
-        v-bind:key="key"
+  <v-card
+    id="biddingtable"
+    :height="this.sideLength"
+    :width="this.sideLength"
+    flat
+  >
+    <PlayerTray
+      player="N"
+      :playerHist="hist_by_players[1]"
+      :sideLength="sideLength"
+      :isCurrent="curPlayer==='N'">
+    </PlayerTray>
+    <PlayerTray
+      player="E"
+      :playerHist="hist_by_players[2]"
+      :sideLength="sideLength"
+      :isCurrent="curPlayer==='E'">
+    </PlayerTray>
+    <span>
+      <v-card
+        class="tablecenter"
+        :height="sideLength * 0.25"
+        :width="sideLength * 0.25"
+        color="transparent"
+        flat
       >
-        <v-card
-          v-bind:class="'d-flex align-center justify-center ma-1 player-' + is_vul(key)"
-        >
-          <div>{{pname}}</div>
+        <v-card 
+          :class="'name-tag player-' + is_vul('N') " 
+          id="tag-N"
+          :width="sideLength * 0.13"
+        >{{player_title('N')}}
         </v-card>
-      </v-col>
-    </v-row>
-    <v-row
-      v-for="(callrow, i) in this.hist_2d"
-      v-bind:key="i"
-      no-gutters justify="center"
-    >
-      <v-col
-        cols=3
-        v-for="(call, j) in callrow"
-        v-bind:key="j"
-      >
-        <Call v-bind:biddingCall="call"></Call>
-      </v-col>
-    </v-row>
-  </v-container>
+        <v-card 
+          :class="'name-tag player-' + is_vul('E') " 
+          id="tag-E"
+          :width="sideLength * 0.13"
+        >{{player_title('E')}}
+        </v-card>
+        <v-card 
+          :class="'name-tag player-' + is_vul('S') " 
+          id="tag-S"
+          :width="sideLength * 0.13"
+        >{{player_title('S')}}
+        </v-card>
+        <v-card 
+          :class="'name-tag player-' + is_vul('W') " 
+          id="tag-W"
+          :width="sideLength * 0.13"
+        >{{player_title('W')}}
+        </v-card>
+        <div class="board-num">{{this.boardNum}}</div>
+      </v-card>
+    </span>
+    <PlayerTray
+      player="W"
+      :playerHist="hist_by_players[0]"
+      :sideLength="sideLength"
+      :isCurrent="curPlayer==='W'">
+    </PlayerTray>
+    <PlayerTray
+      player="S"
+      :playerHist="hist_by_players[3]"
+      :sideLength="sideLength"
+      :isCurrent="curPlayer==='S'">
+    </PlayerTray>
+  </v-card>
 
 </template>
 
 <script>
-import Call from '@/components/Call.vue'
+// import Call from '@/components/Call.vue'
+import PlayerTray from '@/components/PlayerTray.vue'
 
 export default {
   name: 'BiddingTable',
   components: {
-    Call
+    // Call
+    PlayerTray
   },
   props: {
     history: Array,
     boardNum: Number,
     curPlayer: String,
     ended: Boolean,
+    sideLength: Number
   },
   data(){
     return {
@@ -52,19 +92,13 @@ export default {
     }
   },
   computed: {
-    dlr_pos(){
-      return this.player_pos(this.dealer)
-    },
-    hist_2d: function(){
+    hist_by_players: function(){
       var hist = [...this.history]
-      if (!this.ended){
-        hist.push('A')  // A = pending
-      }
-      var hist_2 = []
-      for (let i = 0; i < this.dlr_pos; i++){hist.splice(0, 0, 'B')}  // West will be the first B = buffer
-      while (hist.length % 4 > 0){hist.push('E')}  // multiple of 4. E = blank      
-      for (let j = 0; j < hist.length; j = j + 4){
-        hist_2.push(hist.slice(j, j + 4))
+      var hist_2 = [[], [], [], []]
+      var i = this.boardNum % 4
+      while (hist.length > 0){
+        hist_2[i].push(hist.shift())
+        i = (i + 1) % 4
       }
       return hist_2
     },
@@ -81,8 +115,12 @@ export default {
     }
   },
   methods: {
-    player_pos: function(player){
-      return this.PLAYERS.indexOf(player)
+    player_title(player){
+      if(player===this.dealer){
+        return 'Dlr'
+      } else {
+        return player
+      }
     },
     is_vul(player){
       var vul = false
