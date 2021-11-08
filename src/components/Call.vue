@@ -1,19 +1,21 @@
 <template>
   <v-card
-    height="7vh"
-    class="d-flex align-center justify-center ma-1"
-    v-bind:class="this.to_class(this.biddingCall)"
+    :height="this.sideLength * 0.15"
+    :width="this.sideLength * 0.15"
+    class="d-flex align-center justify-center"
+    :class="this.to_class(this.biddingCall)"
+    v-html="this.to_html(this.biddingCall)"
   >
-    <span
-      v-html="this.to_html(this.biddingCall)"
-    ></span>
   </v-card>
 </template>
 
 <script>
 export default {
   name: 'Call',
-  props: {biddingCall: String},
+  props: {
+    biddingCall: String,
+    sideLength: Number
+  },
   data(){
     return {
       levels: ['1', '2', '3', '4', '5', '6', '7'],

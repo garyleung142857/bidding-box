@@ -1,10 +1,11 @@
 <template>
-  <div>
+  <div v-resize="onResize">
     <BiddingTable
       :history="this.history"
       :boardNum="this.boardNum"
       :curPlayer="this.curPlayer"
       :ended="this.contract.bid != null"
+      :sideLength="this.sideLength"
     ></BiddingTable>
     <v-footer fixed padless id="control-footer">
       <v-row justify="center" no-gutters>
@@ -14,18 +15,17 @@
           </v-btn>
         </v-col>
         <v-col col=6 v-if="contract.bid == null">
-          <v-dialog v-model="dialog" width="90vw">
+          <v-dialog width="unset" v-model="dialog">
             <template v-slot:activator="{on, attrs}">
               <v-btn block id="call-button" class="d-flex align-center justify-center" v-bind="attrs" v-on="on">
                 <v-icon>mdi-arrow-up-box</v-icon>
               </v-btn>
             </template>
-            <v-card elevation=0>
-              <BoxSelect
-                @selectCall="addHistory($event); dialog=false"
-                :biddingState="biddingState"
-              ></BoxSelect>
-            </v-card>
+            <BoxSelect
+              @selectCall="addHistory($event); dialog=false"
+              :biddingState="biddingState"
+              :sideLength="this.sideLength"
+            ></BoxSelect>
           </v-dialog>
         </v-col>
         <v-col col=6 v-else>
@@ -58,7 +58,8 @@ export default {
       PLAYERS: ['W', 'N', 'E', 'S'],
       history: [],
       boardNum: 1,
-      dialog: false
+      dialog: false,
+      sideLength: null,
     }
   },
   computed: {
@@ -113,13 +114,17 @@ export default {
           }
         }
       }
-      return [lastBid, canDbl, canRdbl, contract]
+      return [this.curPlayer, lastBid, canDbl, canRdbl, contract]
     },
     contract: function(){
-      return this.biddingState[3]
+      return this.biddingState[4]
     }
   },
   methods: {
+    onResize: function(){
+      var len_of_largest_sq = Math.min(window.innerWidth, window.innerHeight * 0.9)
+      this.sideLength = len_of_largest_sq
+    },
     addHistory: function(call){
       this.history.push(call)
     },
@@ -149,77 +154,190 @@ export default {
         return call[1]
       }
     },
+  },
+  mounted(){
+    this.onResize()
   }
 }
 </script>
 
-<style>
+<style lang="scss">
   @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap');
 
+  $color-heart: #af3535;
+  $color-spade: #2f3b80;
+  $color-diamond: #dd9b44;
+  $color-club: #5d8b47;
+  $color-nt: #302f46;
+  $color-background: #f3f3f3;
+  $color-light: #fcfcfc;
+  $color-vul: #f37272;
+  $color-nv: #75ffca;
+  $color-current: #eee066;
+  $color-noncur: #ced3d4;
+  $color-call: #9ba8eb;
+
   #app, #control-footer {
-    background-color: #f5e9d9;
+    background-color: $color-background;
     font-family: 'Roboto', sans-serif;
   }
 
-  #biddingtable {
-    overflow-y: auto;
-    max-height: 90vh;
-  }
-
-  #undo-button {background-color: #f88080;}
-  #call-button {background-color: #9ba8eb}
-  #advance-button {background-color: #a3e684;}
+  #undo-button {background-color: $color-vul;}
+  #call-button {background-color: $color-call;}
+  #advance-button {background-color: $color-nv;}
 
   #undo-button, #call-button, #advance-button, #contract{height: 10vh}
 
-  #contract, .player-nv, .player-v, .call-choice span, .table-label {
+  #contract, .player-nv, .player-v, .call-choice span, .table-label{
     font-weight: bold;
+    max-width: unset;
   }
 
-  #boxselect {background-color: #fcffee;}
+  .box-bids {background-color: $color-background;}
 
-  .label-N span, .label-N {color: #302f46;}
-  .label-S span, .label-S {color: #2f3b80;}
-  .label-H span, .label-H {color: #af3535;}
-  .label-D span, .label-D {color: #dd9b44;}
-  .label-C span, .label-C {color: #5d8b47;}
+  .label-N {color: $color-nt !important;}
+  .label-S {color: $color-spade !important;}
+  .label-H {color: $color-heart !important;}
+  .label-D {color: $color-diamond !important;}
+  .label-C {color: $color-club !important;}
 
-  .label-P, .label-X, .label-R, .label-P span, .label-X span, .label-R span {color: #4a495e}
+  .label-P, .label-X, .label-R {color: $color-background !important;}
 
-  .table-label.label-P {background-color: #d7f8c9 !important;}
-  .table-label.label-X {background-color: #fac2c2 !important;}
-  .table-label.label-R {background-color: #c7cefc !important;}
-
-  #control-footer .v-icon{color: #4a495e !important;}
-
-  #call-P {background-color: #5d8b47;}
-  #call-X {background-color: #af3535;}
-  #call-R {background-color: #2f3b80;}
-
-  #call-P span, #call-X span, #call-R span {color: #f5f5f5}
-
-  button[disabled="disabled"] span {color: #f5f5f5;}
-
-  .bid-choice .normal-label #contract {background-color: #f5f5f5 !important;}
-
-  .label-A {border: #4a495e 3px solid !important;}
-  .label-A, .label-B, .label-E {
-    background-color: #f5e9d9 !important;
+  .label-E {
+    background-color: transparent !important;
     box-shadow: none !important;
   }
 
+  .table-label.label-P {background-color: $color-club !important;}
+  .table-label.label-X {background-color: $color-heart !important;}
+  .table-label.label-R {background-color: $color-spade !important;}
+
+  #control-footer .v-icon{color: $color-nt !important;}
+
+  #call-P {background-color: $color-club;}
+  #call-X {background-color: $color-heart;}
+  #call-R {background-color: $color-spade;}
+
+  button[disabled="disabled"] span {color: $color-background !important;}
+
+  .bid-choice, .normal-label {background-color: $color-light !important;}
+
+
   .player-v {
-    background-color: #f37272 !important;
-    color: #fcffee !important;
+    background-color: $color-vul !important;
+    color: $color-light !important;
   }
 
   .player-nv {
-    background-color: #fafad2 !important;
-    color: #4a495e !important;
+    background-color: $color-nv !important;
+    color: $color-nt !important;
   }
 
   .call-choice {padding: 0px !important;}
 
   #contract, .call-choice span, .table-label{font-size: x-large;}
 
+  .biddingtable{
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: transparent;
+  }
+
+  .playertray {
+    margin: 3px;
+    padding: 3px;
+    vertical-align: text-bottom;
+    border-radius: 3px;
+    overflow-y: auto;
+    background-color: $color-noncur !important;
+  }
+
+  .tray-holder{overflow: auto;}
+
+  .playertray.current{background-color: $color-current !important;}
+
+  .biddingtable, .name-tag, .playertray, .tablecenter, .board-num{
+    position: absolute;
+  }
+
+  .playertray#S {
+    bottom: 0;
+    right: 0;
+    transform: rotate(0deg);
+  }
+
+  .playertray#N {
+    top: 0;
+    left: 0;
+    transform: rotate(180deg);
+  }
+
+  .playertray#E {
+    top: 0;
+    right: 0;
+    transform: rotate(-90deg) translateY(-100%);
+    transform-origin: top right;
+  }
+
+  .playertray#W {
+    bottom: 0;
+    left: 0;
+    transform: rotate(90deg) translateX(-100%) ;
+    transform-origin: bottom left;
+  }
+
+  .table-label{transform: rotate(180deg);}
+
+  .tablecenter{
+    transform: translate(-50%,-50%);
+    top: 50%;
+    left: 50%;
+  }
+
+  .name-tag#tag-N{
+    top: 0;
+    left: 50%;
+    transform: rotate(0deg) translateX(-50%);
+  }
+
+  .name-tag#tag-S{
+    bottom: 0;
+    left: 50%;
+    transform: rotate(180deg) translateX(50%);
+  }
+
+  .name-tag#tag-E{
+    top: 50%;
+    right: 0;
+    transform: rotate(90deg) translateX(50%);
+    transform-origin: top right;
+  }
+
+  .name-tag#tag-W{
+    top: 50%;
+    left: 0;
+    transform: rotate(-90deg) translateX(-50%);
+    transform-origin: top left;
+  }
+
+  .board-num{
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: x-large;
+    font-weight: bold;
+  }
+
+  .box-bids{
+    padding: 0;
+    margin: 0;
+  }
+
+  .box-bids#N{transform: rotate(180deg);}
+  .box-bids#E{transform: rotate(-90deg);}
+  .box-bids#W{transform: rotate(90deg);}
+  .box-bids#S{transform: rotate(0deg);}
+
+  ::-webkit-scrollbar {display: none;}
 </style>
