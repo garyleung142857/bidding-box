@@ -1,12 +1,11 @@
 <template>
   <v-card
-    :height="this.sideLength * 0.15" :width="this.sideLength  * 0.15"
+    :height="this.sideLength * 0.15"
+    :width="this.sideLength * 0.15"
     class="d-flex align-center justify-center"
     :class="this.to_class(this.biddingCall)"
+    v-html="this.to_html(this.biddingCall)"
   >
-    <span
-      v-html="this.to_html(this.biddingCall)"
-    ></span>
   </v-card>
 </template>
 

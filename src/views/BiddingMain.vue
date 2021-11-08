@@ -161,72 +161,83 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
   @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap');
 
+  $color-heart: #af3535;
+  $color-spade: #2f3b80;
+  $color-diamond: #dd9b44;
+  $color-club: #5d8b47;
+  $color-nt: #302f46;
+  $color-background: #f3f3f3;
+  $color-light: #fcfcfc;
+  $color-vul: #f37272;
+  $color-nv: #75ffca;
+  $color-current: #eee066;
+  $color-noncur: #ced3d4;
+  $color-call: #9ba8eb;
+
   #app, #control-footer {
-    background-color: #f5e9d9;
+    background-color: $color-background;
     font-family: 'Roboto', sans-serif;
   }
 
-  #undo-button {background-color: #f88080;}
-  #call-button {background-color: #9ba8eb}
-  #advance-button {background-color: #a3e684;}
+  #undo-button {background-color: $color-vul;}
+  #call-button {background-color: $color-call;}
+  #advance-button {background-color: $color-nv;}
 
   #undo-button, #call-button, #advance-button, #contract{height: 10vh}
 
-  #contract, .player-nv, .player-v, .call-choice span, .table-label {
+  #contract, .player-nv, .player-v, .call-choice span, .table-label{
     font-weight: bold;
-    max-width: unset
+    max-width: unset;
   }
 
-  .box-bids {background-color: #fcffee;}
+  .box-bids {background-color: $color-background;}
 
-  .label-N span, .label-N {color: #302f46;}
-  .label-S span, .label-S {color: #2f3b80;}
-  .label-H span, .label-H {color: #af3535;}
-  .label-D span, .label-D {color: #dd9b44;}
-  .label-C span, .label-C {color: #5d8b47;}
+  .label-N {color: $color-nt !important;}
+  .label-S {color: $color-spade !important;}
+  .label-H {color: $color-heart !important;}
+  .label-D {color: $color-diamond !important;}
+  .label-C {color: $color-club !important;}
 
-  .label-P, .label-X, .label-R, .label-P span, .label-X span, .label-R span {color: #4a495e}
+  .label-P, .label-X, .label-R {color: $color-background !important;}
 
-  .table-label.label-P {background-color: #d7f8c9 !important;}
-  .table-label.label-X {background-color: #fac2c2 !important;}
-  .table-label.label-R {background-color: #c7cefc !important;}
-
-  #control-footer .v-icon{color: #4a495e !important;}
-
-  #call-P {background-color: #5d8b47;}
-  #call-X {background-color: #af3535;}
-  #call-R {background-color: #2f3b80;}
-
-  #call-P span, #call-X span, #call-R span {color: #f5f5f5}
-
-  button[disabled="disabled"] span {color: #f5f5f5;}
-
-  .bid-choice .normal-label #contract {background-color: #f5f5f5 !important;}
-
-  .label-B, .label-E {
+  .label-E {
     background-color: transparent !important;
     box-shadow: none !important;
   }
 
+  .table-label.label-P {background-color: $color-club !important;}
+  .table-label.label-X {background-color: $color-heart !important;}
+  .table-label.label-R {background-color: $color-spade !important;}
+
+  #control-footer .v-icon{color: $color-nt !important;}
+
+  #call-P {background-color: $color-club;}
+  #call-X {background-color: $color-heart;}
+  #call-R {background-color: $color-spade;}
+
+  button[disabled="disabled"] span {color: $color-background !important;}
+
+  .bid-choice, .normal-label {background-color: $color-light !important;}
+
+
   .player-v {
-    background-color: #f37272 !important;
-    color: #fcffee !important;
+    background-color: $color-vul !important;
+    color: $color-light !important;
   }
 
   .player-nv {
-    background-color: #fafad2 !important;
-    color: #4a495e !important;
+    background-color: $color-nv !important;
+    color: $color-nt !important;
   }
 
   .call-choice {padding: 0px !important;}
 
   #contract, .call-choice span, .table-label{font-size: x-large;}
 
-  #biddingtable{
-    position: absolute;
+  .biddingtable{
     top: 45%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -239,64 +250,49 @@ export default {
     vertical-align: text-bottom;
     border-radius: 3px;
     overflow-y: auto;
-    background-color: rgb(206, 211, 212) !important;
+    background-color: $color-noncur !important;
   }
 
-  .tray-holder{
-    overflow: auto;
-  }
+  .tray-holder{overflow: auto;}
 
-  .playertray.current{
-    background-color: rgb(255, 254, 187) !important;
-  }
+  .playertray.current{background-color: $color-current !important;}
 
-  #playertray-S {
+  .biddingtable, .name-tag, .playertray, .tablecenter, .board-num{
     position: absolute;
+  }
+
+  .playertray#S {
     bottom: 0;
     right: 0;
     transform: rotate(0deg);
   }
 
-  #playertray-N {
-    position: absolute;
+  .playertray#N {
     top: 0;
     left: 0;
     transform: rotate(180deg);
   }
 
-  #playertray-E {
-    position: absolute;
+  .playertray#E {
     top: 0;
     right: 0;
     transform: rotate(-90deg) translateY(-100%);
     transform-origin: top right;
   }
 
-  #playertray-W {
-    position: absolute;
+  .playertray#W {
     bottom: 0;
     left: 0;
     transform: rotate(90deg) translateX(-100%) ;
     transform-origin: bottom left;
   }
 
-  .table-label{
-    transform: rotate(180deg);
-  }
+  .table-label{transform: rotate(180deg);}
 
   .tablecenter{
-    position: absolute;
     transform: translate(-50%,-50%);
     top: 50%;
     left: 50%;
-  }
-
-  ::-webkit-scrollbar {
-    display: none;
-  }
-
-  .name-tag{
-    position: absolute;
   }
 
   .name-tag#tag-N{
@@ -326,7 +322,6 @@ export default {
   }
 
   .board-num{
-    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -339,20 +334,10 @@ export default {
     margin: 0;
   }
 
-  .box-bids#W{
-    transform: rotate(90deg);
-  }
+  .box-bids#N{transform: rotate(180deg);}
+  .box-bids#E{transform: rotate(-90deg);}
+  .box-bids#W{transform: rotate(90deg);}
+  .box-bids#S{transform: rotate(0deg);}
 
-  .box-bids#E{
-    transform: rotate(-90deg);
-  }
-
-  .box-bids#N{
-    transform: rotate(180deg);
-  }
-
-  .box-bids#S{
-    transform: rotate(0deg);
-  }
-
+  ::-webkit-scrollbar {display: none;}
 </style>

@@ -2,9 +2,9 @@
   <v-sheet
     class="playertray"
     :class="{current: isCurrent}"
-    :id="'playertray-' + this.player"
-    :width="this.sideLength * 0.6"
-    :height="this.sideLength * 0.35"
+    :id="this.player"
+    :width="sideLength * 0.6"
+    :height="sideLength * 0.35"
   >
     <div class="traycontent">
       <v-row

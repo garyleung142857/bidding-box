@@ -1,21 +1,22 @@
 <template>
   <v-card
-    id="biddingtable"
+    class="biddingtable"
     :height="this.sideLength"
     :width="this.sideLength"
     flat
+    color="transparent"
   >
     <PlayerTray
       player="N"
       :playerHist="hist_by_players[1]"
       :sideLength="sideLength"
-      :isCurrent="curPlayer==='N'">
+      :isCurrent="this.is_current('N')">
     </PlayerTray>
     <PlayerTray
       player="E"
       :playerHist="hist_by_players[2]"
       :sideLength="sideLength"
-      :isCurrent="curPlayer==='E'">
+      :isCurrent="this.is_current('E')">
     </PlayerTray>
     <span>
       <v-card
@@ -56,13 +57,13 @@
       player="W"
       :playerHist="hist_by_players[0]"
       :sideLength="sideLength"
-      :isCurrent="curPlayer==='W'">
+      :isCurrent="this.is_current('W')">
     </PlayerTray>
     <PlayerTray
       player="S"
       :playerHist="hist_by_players[3]"
       :sideLength="sideLength"
-      :isCurrent="curPlayer==='S'">
+      :isCurrent="this.is_current('S')">
     </PlayerTray>
   </v-card>
 
@@ -123,17 +124,11 @@ export default {
       }
     },
     is_vul(player){
-      var vul = false
-      if (['E', 'W'].includes(player)){
-        vul = this.vulerability['EW']
-      } else {
-        vul = this.vulerability['NS']
-      }
-      if (vul){
-        return 'v'
-      } else {
-        return 'nv'
-      }
+      var vul = ['E', 'W'].includes(player) ? this.vulerability['EW'] : this.vulerability['NS']
+      return vul ? 'v' : 'nv'
+    },
+    is_current(player){
+      return !this.ended && this.curPlayer===player
     }
   },
 }
