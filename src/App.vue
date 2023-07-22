@@ -1,8 +1,17 @@
 <template>
   <v-app id="app">
-    <router-view/>
+    <BiddingMain/>
   </v-app>
 </template>
+
+<script>
+import BiddingMain from "../src/views/BiddingMain.vue"
+export default {
+  components: {
+    BiddingMain
+  }
+}
+</script>
 
 <style lang="scss">
 #app {
