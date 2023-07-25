@@ -70,11 +70,11 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'BoxSelect',
   props: {
     biddingState: Array,  // [curplayer, string, lastBid: str, canDbl: bool, canRdbl: bool]
-    sideLength: Number,
   },
   data(){
     return {
@@ -84,6 +84,9 @@ export default {
     }
   },
   computed: {
+    sideLength: function() {
+      return this.getSideLength()
+    },
     last_bid: function(){
       return this.biddingState[1]
     },
@@ -104,6 +107,7 @@ export default {
     }
   },
   methods: {
+    ...mapGetters('sizing', ['getSideLength']),
     clicked(event){
       var selected_call = event.currentTarget.id.replace('call-', '')
       this.$emit('selectCall', selected_call)

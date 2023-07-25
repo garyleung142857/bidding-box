@@ -10,11 +10,11 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'Call',
   props: {
-    biddingCall: String,
-    sideLength: Number
+    biddingCall: String
   },
   data(){
     return {
@@ -23,7 +23,13 @@ export default {
       pxr : {'P': 'P', 'X': 'X', 'R': 'XX'}
     }
   },
+  computed: {
+    sideLength: function() {
+      return this.getSideLength()
+    }
+  },
   methods: {
+    ...mapGetters('sizing', ['getSideLength']),
     to_html(str){
       if(['A', 'B', 'E'].includes(str)){return ''}
       if(str in this.pxr){return this.pxr[str]}

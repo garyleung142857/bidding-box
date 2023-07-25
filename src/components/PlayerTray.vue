@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import Call from '@/components/Call.vue'
 
 export default {
@@ -38,7 +39,6 @@ export default {
   props: {
     player: String,  // N / E / S / W
     playerHist: Array,
-    sideLength: Number,
     isCurrent: Boolean
   },
   data(){
@@ -47,7 +47,10 @@ export default {
     }
   },
   computed: {
-      hist_2d: function(){
+    sideLength: function() {
+      return this.getSideLength()
+    },
+    hist_2d: function(){
       var hist = [...this.playerHist]
       var hist_2 = []
       for (let i = 0; i < this.dlr_pos; i++){hist.splice(0, 0, 'B')}  // West will be the first B = buffer
@@ -56,7 +59,10 @@ export default {
         hist_2.push(hist.slice(j, j + 4))
       }
       return hist_2
-    },
+  },
+  },
+  methods: {
+    ...mapGetters('sizing', ['getSideLength'])
   }
 }
 </script>

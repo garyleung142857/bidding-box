@@ -9,13 +9,11 @@
     <PlayerTray
       player="N"
       :playerHist="hist_by_players[1]"
-      :sideLength="sideLength"
       :isCurrent="this.is_current('N')">
     </PlayerTray>
     <PlayerTray
       player="E"
       :playerHist="hist_by_players[2]"
-      :sideLength="sideLength"
       :isCurrent="this.is_current('E')">
     </PlayerTray>
     <span>
@@ -56,13 +54,11 @@
     <PlayerTray
       player="W"
       :playerHist="hist_by_players[0]"
-      :sideLength="sideLength"
       :isCurrent="this.is_current('W')">
     </PlayerTray>
     <PlayerTray
       player="S"
       :playerHist="hist_by_players[3]"
-      :sideLength="sideLength"
       :isCurrent="this.is_current('S')">
     </PlayerTray>
   </v-card>
@@ -70,7 +66,7 @@
 </template>
 
 <script>
-// import Call from '@/components/Call.vue'
+import { mapGetters } from 'vuex'
 import PlayerTray from '@/components/PlayerTray.vue'
 
 export default {
@@ -84,7 +80,6 @@ export default {
     boardNum: Number,
     curPlayer: String,
     ended: Boolean,
-    sideLength: Number
   },
   data(){
     return {
@@ -93,6 +88,9 @@ export default {
     }
   },
   computed: {
+    sideLength: function() {
+      return this.getSideLength()
+    },
     hist_by_players: function(){
       var hist = [...this.history]
       var hist_2 = [[], [], [], []]
@@ -116,6 +114,7 @@ export default {
     }
   },
   methods: {
+    ...mapGetters('sizing', ['getSideLength']),
     player_title(player){
       if(player===this.dealer){
         return 'Dlr'

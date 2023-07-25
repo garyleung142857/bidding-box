@@ -5,7 +5,6 @@
       :boardNum="this.boardNum"
       :curPlayer="this.curPlayer"
       :ended="this.contract.bid != null"
-      :sideLength="this.sideLength"
     ></BiddingTable>
     <v-footer fixed padless id="control-footer">
       <v-row justify="center" no-gutters>
@@ -44,6 +43,7 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 import BiddingTable from '@/components/BiddingTable.vue'
 import BoxSelect from '@/components/BoxSelect.vue'
 import Contract from '@/components/Contract.vue'
@@ -121,9 +121,10 @@ export default {
     }
   },
   methods: {
+    ...mapMutations('sizing', ['changeSideLength']),
     onResize: function(){
-      var len_of_largest_sq = Math.min(window.innerWidth, window.innerHeight * 0.9)
-      this.sideLength = len_of_largest_sq
+      this.sideLength = (Math.min(window.innerWidth, window.innerHeight * 0.9))
+      this.changeSideLength(this.sideLength)
     },
     addHistory: function(call){
       this.history.push(call)
