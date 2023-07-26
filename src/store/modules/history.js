@@ -9,6 +9,7 @@ const strain_of_call = (call) => {
 }
 
 const state = () => ({
+  boardsHistory: {}, // {boardNum: history_of_board}
   history: [],
   boardNum: 1,
 })
@@ -22,6 +23,12 @@ const getters = {
   },
   boardNum (state) {
     return state.boardNum
+  },
+  vulerability (state) {
+    return {
+      'EW': [0, 3, 4, 6, 7, 9, 10, 13].includes(state.boardNum % 16),
+      'NS': [2, 4, 5, 7, 10, 12, 13, 15].includes(state.boardNum % 16)
+    }
   },
   history (state) {
     return state.history
@@ -107,16 +114,16 @@ const mutations = {
     state.history.push(call)
   },
   advanceBoard (state) {
-    if (state.boardNum === 16) {
-      state.boardNum = 1
-    } else {
-      state.boardNum += 1
-    }
-    state.history = []
+    state.boardsHistory[state.boardNum] = [...state.history]
+    state.boardNum += 1
+    state.history = state.boardNum in state.boardsHistory ? state.boardsHistory[state.boardNum] : []
   },
   undo (state) {
     if (state.history.length > 0) {
       state.history.pop()
+    } else if (state.boardNum > 1) {
+      state.boardNum -= 1
+      state.history = state.boardNum in state.boardsHistory ? state.boardsHistory[state.boardNum] : []
     }
   }
 }

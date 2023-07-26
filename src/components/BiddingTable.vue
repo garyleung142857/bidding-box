@@ -1,8 +1,8 @@
 <template>
   <v-card
     class="biddingtable"
-    :height="this.sideLength"
-    :width="this.sideLength"
+    :height="sideLength"
+    :width="sideLength"
     flat
     color="transparent"
   >
@@ -48,7 +48,7 @@
           :width="sideLength * 0.13"
         >{{player_title('W')}}
         </v-card>
-        <div class="board-num">{{this.boardNum}}</div>
+        <div class="board-num">{{boardNum}}</div>
       </v-card>
     </span>
     <PlayerTray
@@ -83,23 +83,14 @@ export default {
   },
   computed: {
     ...mapGetters('sizing', ['sideLength']),
-    ...mapGetters('history', ['dealer', 'boardNum', 'curPlayer', 'historyByPlayers', 'contract']),
-    vulerability: function(){
-      var ns = [2, 4, 5, 7, 10, 12, 13, 15]
-      var ew = [3, 4, 6, 7, 9, 10, 13, 16]
-      return {
-        'EW': ew.includes(this.boardNum),
-        'NS': ns.includes(this.boardNum)
-      }
-    }
+    ...mapGetters('history', ['dealer', 'boardNum', 'vulerability', 'curPlayer', 'historyByPlayers', 'contract']),
   },
   methods: {
     player_title(player){
       if(player === this.dealer){
         return 'Dlr'
-      } else {
-        return player
       }
+      return player
     },
     is_vul(player){
       var vul = ['E', 'W'].includes(player) ? this.vulerability['EW'] : this.vulerability['NS']
