@@ -1,6 +1,6 @@
 <template>
   <div>
-    <template v-if="this.contract.declarer==null">Pass Out</template>
+    <template v-if="contract.declarer===undefined">Pass Out</template>
     <template v-else>
       <span
         :class="'label-' + this.contract.bid[1]"
@@ -12,16 +12,16 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'Contract',
-  props: {
-    contract: Object,
-    vul: Boolean
-  },
   data(){
     return {
       strains: {'N': 'N', 'S': '&#9828;', 'H': '&#9825;', 'D': '&#9826;', 'C': '&#9831;'},
     }
+  },
+  computed: {
+    ...mapGetters('history', ['contract']),
   },
   methods: {
     bid_to_html(str){

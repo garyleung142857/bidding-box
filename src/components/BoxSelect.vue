@@ -1,7 +1,6 @@
 <template>
-
     <v-card
-      class="box-bids" :id="this.cur_player"
+      class="box-bids" :id="this.curPlayer"
       :height="sideLength * 0.9"
       :width="sideLength * 0.9"
       flat
@@ -33,7 +32,7 @@
               :ripple="false"
               :id="'call-R'"
               @click="clicked($event)"
-              :disabled="this.cannot_rdbl"
+              :disabled="!canRdbl"
             >
               <span class="label-X">XX</span>
             </v-btn>
@@ -58,7 +57,7 @@
               :ripple="false"
               :id="'call-X'"
               @click="clicked($event)"
-              :disabled="this.cannot_dbl"
+              :disabled="!canDbl"
             >
               <span class="label-X">X</span>
             </v-btn>
@@ -70,35 +69,18 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 export default {
   name: 'BoxSelect',
-  props: {
-    biddingState: Array,  // [curplayer, string, lastBid: str, canDbl: bool, canRdbl: bool]
-  },
   data(){
     return {
       levels: ['1', '2', '3', '4', '5', '6', '7'],
       strains: {'N': 'N', 'S': '&#9828;', 'H': '&#9825;', 'D': '&#9826;', 'C': '&#9831;'},
-      
     }
   },
   computed: {
-    sideLength: function() {
-      return this.getSideLength()
-    },
-    last_bid: function(){
-      return this.biddingState[1]
-    },
-    cannot_dbl: function(){
-      return !(this.biddingState[2])
-    },
-    cannot_rdbl: function(){
-      return !(this.biddingState[3])
-    },
-    cur_player: function(){
-      return this.biddingState[0]
-    },
+    ...mapGetters('sizing', ['sideLength']),
+    ...mapGetters('history', ['curPlayer', 'lastBid', 'canDbl', 'canRdbl']),
     bidHeight: function(){
       return 0.11 * this.sideLength
     },
@@ -107,21 +89,22 @@ export default {
     }
   },
   methods: {
-    ...mapGetters('sizing', ['getSideLength']),
+    ...mapMutations('history', ['addHistory']),
     clicked(event){
-      var selected_call = event.currentTarget.id.replace('call-', '')
-      this.$emit('selectCall', selected_call)
+      var selectedCall = event.currentTarget.id.replace('call-', '')
+      this.addHistory(selectedCall)
+      this.$emit('selectedCall')
     },
     invalid_bid(level, strain){
-      if(this.last_bid === ''){
+      if(this.lastBid === undefined){
         return false
-      } else if(level < this.last_bid[0]){
+      } else if(level < this.lastBid[0]){
         return true 
-      } else if (level > this.last_bid[0]){
+      } else if (level > this.lastBid[0]){
         return false
       } else {
         var k = Object.keys(this.strains)
-        return k.indexOf(strain) >= k.indexOf(this.last_bid[1])
+        return k.indexOf(strain) >= k.indexOf(this.lastBid[1])
       }
     }
   },

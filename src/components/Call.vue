@@ -24,12 +24,9 @@ export default {
     }
   },
   computed: {
-    sideLength: function() {
-      return this.getSideLength()
-    }
+    ...mapGetters('sizing', ['sideLength']),
   },
   methods: {
-    ...mapGetters('sizing', ['getSideLength']),
     to_html(str){
       if(['A', 'B', 'E'].includes(str)){return ''}
       if(str in this.pxr){return this.pxr[str]}

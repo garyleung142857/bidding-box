@@ -3,7 +3,7 @@ const state = () => ({
 })
 
 const getters = {
-  getSideLength (state) {
+  sideLength (state) {
     return state.sideLength
   }
 }

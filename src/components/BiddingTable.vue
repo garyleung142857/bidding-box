@@ -8,13 +8,13 @@
   >
     <PlayerTray
       player="N"
-      :playerHist="hist_by_players[1]"
-      :isCurrent="this.is_current('N')">
+      :playerHist="historyByPlayers[1]"
+      :isCurrent="is_current('N')">
     </PlayerTray>
     <PlayerTray
       player="E"
-      :playerHist="hist_by_players[2]"
-      :isCurrent="this.is_current('E')">
+      :playerHist="historyByPlayers[2]"
+      :isCurrent="is_current('E')">
     </PlayerTray>
     <span>
       <v-card
@@ -53,13 +53,13 @@
     </span>
     <PlayerTray
       player="W"
-      :playerHist="hist_by_players[0]"
-      :isCurrent="this.is_current('W')">
+      :playerHist="historyByPlayers[0]"
+      :isCurrent="is_current('W')">
     </PlayerTray>
     <PlayerTray
       player="S"
-      :playerHist="hist_by_players[3]"
-      :isCurrent="this.is_current('S')">
+      :playerHist="historyByPlayers[3]"
+      :isCurrent="is_current('S')">
     </PlayerTray>
   </v-card>
 
@@ -75,12 +75,6 @@ export default {
     // Call
     PlayerTray
   },
-  props: {
-    history: Array,
-    boardNum: Number,
-    curPlayer: String,
-    ended: Boolean,
-  },
   data(){
     return {
       PLAYERS: ['W', 'N', 'E', 'S'],
@@ -88,22 +82,8 @@ export default {
     }
   },
   computed: {
-    sideLength: function() {
-      return this.getSideLength()
-    },
-    hist_by_players: function(){
-      var hist = [...this.history]
-      var hist_2 = [[], [], [], []]
-      var i = this.boardNum % 4
-      while (hist.length > 0){
-        hist_2[i].push(hist.shift())
-        i = (i + 1) % 4
-      }
-      return hist_2
-    },
-    dealer: function(){
-      return (this.PLAYERS[this.boardNum % 4])
-    },
+    ...mapGetters('sizing', ['sideLength']),
+    ...mapGetters('history', ['dealer', 'boardNum', 'curPlayer', 'historyByPlayers', 'contract']),
     vulerability: function(){
       var ns = [2, 4, 5, 7, 10, 12, 13, 15]
       var ew = [3, 4, 6, 7, 9, 10, 13, 16]
@@ -114,9 +94,8 @@ export default {
     }
   },
   methods: {
-    ...mapGetters('sizing', ['getSideLength']),
     player_title(player){
-      if(player===this.dealer){
+      if(player === this.dealer){
         return 'Dlr'
       } else {
         return player
@@ -127,7 +106,7 @@ export default {
       return vul ? 'v' : 'nv'
     },
     is_current(player){
-      return !this.ended && this.curPlayer===player
+      return this.contract.bid === undefined && this.curPlayer === player
     }
   },
 }

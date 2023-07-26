@@ -47,9 +47,7 @@ export default {
     }
   },
   computed: {
-    sideLength: function() {
-      return this.getSideLength()
-    },
+    ...mapGetters('sizing', ['sideLength']),
     hist_2d: function(){
       var hist = [...this.playerHist]
       var hist_2 = []
@@ -59,10 +57,7 @@ export default {
         hist_2.push(hist.slice(j, j + 4))
       }
       return hist_2
-  },
-  },
-  methods: {
-    ...mapGetters('sizing', ['getSideLength'])
+    }
   }
 }
 </script>
