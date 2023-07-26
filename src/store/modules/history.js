@@ -125,6 +125,11 @@ const mutations = {
       state.boardNum -= 1
       state.history = state.boardNum in state.boardsHistory ? state.boardsHistory[state.boardNum] : []
     }
+  },
+  resetAll (state) {
+    state.boardsHistory = {}
+    state.history = []
+    state.boardNum = 1
   }
 }
 
