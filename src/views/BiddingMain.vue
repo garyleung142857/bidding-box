@@ -176,10 +176,7 @@ export default {
   #undo-button {background-color: $color-vul;}
   #unwind-button {background-color: $color-unwind;}
   #advance-button {background-color: $color-nv;}
-  #reset-button {
-    border: 5px solid $color-reset;
-    background-color: $color-current;
-  }
+  #reset-button {background-color: $color-current;}
 
   #undo-button, #reset-button, #call-button, #unwind-button, #advance-button, #td-button{height: 10vh}
   #contract{height: 5vh}
