@@ -4,6 +4,28 @@
     <v-dialog width="unset" v-model="boxDialog">
       <BoxSelect @selectedCall="boxDialog = false"/>
     </v-dialog>
+    <v-dialog width="unset" v-model="resetDialog">
+      <v-card>
+        <v-card-title>
+          Reset All History?
+        </v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="primary"
+            @click="resetDialog = false"
+          >
+            Cancel
+          </v-btn>
+          <v-btn
+            color="error"
+            @click="resetAll(); resetDialog = false"
+          >
+            Reset
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-footer fixed padless id="control-footer">
       <v-row justify="center" no-gutters>
         <v-col cols=12 id="contract">
@@ -14,35 +36,68 @@
             TD
           </v-btn>
         </v-col>
-        <template v-if="!tdOpened">
-          <v-col cols=2 v-if="biddingEnded">
-            <v-btn block id="advance-button" class="d-flex align-center justify-center" @click="advanceBoard()">
-              <v-icon>mdi-skip-next</v-icon>
-            </v-btn>
-          </v-col>
-        </template>
         <template v-if="tdOpened">
           <v-col cols=2>
-            <v-btn block outlined id="reset-button" class="d-flex align-center justify-center" @click="resetAll()">
-              <v-icon>mdi-nuke</v-icon>
-            </v-btn>
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn 
+                  block id="reset-button" class="d-flex align-center justify-center" 
+                  @click.native="resetDialog=true"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  <v-icon>mdi-nuke</v-icon>
+                </v-btn>
+              </template>
+              <span>Reset</span>
+            </v-tooltip>
           </v-col>
           <v-col cols=4>
-            <v-btn block id="undo-button" class="d-flex align-center justify-center" @click="undo()">
-              <v-icon>mdi-arrow-u-left-top</v-icon>
-            </v-btn>
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  block id="undo-button" class="d-flex align-center justify-center"
+                  @click="undo()"
+                  v-bind="attrs"
+                  v-on="on"  
+                >
+                  <v-icon>mdi-arrow-u-left-top</v-icon>
+                </v-btn>
+              </template>
+              <span> Undo last call </span>
+            </v-tooltip>
           </v-col>
           <v-col cols=2>
-            <v-btn block id="unwind-button" class="d-flex align-center justify-center" @click="unwindBoard()">
-              <v-icon>mdi-skip-previous</v-icon>
-            </v-btn>
-          </v-col>
-          <v-col cols=2>
-            <v-btn block id="advance-button" class="d-flex align-center justify-center" @click="advanceBoard()">
-              <v-icon>mdi-skip-next</v-icon>
-            </v-btn>
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn 
+                  block id="unwind-button" class="d-flex align-center justify-center" 
+                  @click="unwindBoard()"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  <v-icon>mdi-skip-previous</v-icon>
+                </v-btn>
+              </template>
+              <span> Nav to previous board </span>
+            </v-tooltip>  
           </v-col>
         </template>
+        <v-col cols=2 v-if="biddingEnded || tdOpened">
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn 
+                block id="advance-button" class="d-flex align-center justify-center" 
+                @click="advanceBoard()"
+                v-bind="attrs"
+                v-on="on"
+              >
+                <v-icon>mdi-skip-next</v-icon>
+              </v-btn>
+            </template>
+            <span>Nav to next board</span>
+          </v-tooltip>
+        </v-col>
       </v-row>
     </v-footer>
   </div>
@@ -65,6 +120,7 @@ export default {
     return {
       boxDialog: false,
       tdOpened: false,
+      resetDialog: false,
       sideLength: null,
     }
   },
@@ -120,7 +176,10 @@ export default {
   #undo-button {background-color: $color-vul;}
   #unwind-button {background-color: $color-unwind;}
   #advance-button {background-color: $color-nv;}
-  #reset-button {border: 5px solid $color-reset}
+  #reset-button {
+    border: 5px solid $color-reset;
+    background-color: $color-current;
+  }
 
   #undo-button, #reset-button, #call-button, #unwind-button, #advance-button, #td-button{height: 10vh}
   #contract{height: 5vh}
