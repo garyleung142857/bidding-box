@@ -118,12 +118,15 @@ const mutations = {
     state.boardNum += 1
     state.history = state.boardNum in state.boardsHistory ? state.boardsHistory[state.boardNum] : []
   },
+  unwindBoard (state) {
+    if (state.boardNum > 1) {
+      state.boardNum -= 1
+      state.history = state.boardNum in state.boardsHistory ? state.boardsHistory[state.boardNum] : []
+    }
+  },
   undo (state) {
     if (state.history.length > 0) {
       state.history.pop()
-    } else if (state.boardNum > 1) {
-      state.boardNum -= 1
-      state.history = state.boardNum in state.boardsHistory ? state.boardsHistory[state.boardNum] : []
     }
   },
   resetAll (state) {

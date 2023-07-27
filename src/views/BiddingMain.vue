@@ -1,33 +1,48 @@
 <template>
   <div v-resize="onResize">
-    <BiddingTable />
+    <BiddingTable @click.native="toggleDialog()" />
+    <v-dialog width="unset" v-model="boxDialog">
+      <BoxSelect @selectedCall="boxDialog = false"/>
+    </v-dialog>
     <v-footer fixed padless id="control-footer">
       <v-row justify="center" no-gutters>
-        <v-col cols=3>
-          <v-btn block id="undo-button" class="d-flex align-center justify-center" @click="undo()">
-            <v-icon>mdi-arrow-u-left-top</v-icon>
+        <v-col cols=12 id="contract">
+          <Contract />
+        </v-col>
+        <v-col :cols="tdOpened ? 2 : biddingEnded ? 10 : 12">
+          <v-btn block id="td-button" class="d-flex align-center justify-center" @click="tdOpened=!tdOpened">
+            TD
           </v-btn>
         </v-col>
-        <v-col col=6 v-if="contract.bid == undefined">
-          <v-dialog width="unset" v-model="dialog">
-            <template v-slot:activator="{on, attrs}">
-              <v-btn block id="call-button" class="d-flex align-center justify-center" v-bind="attrs" v-on="on">
-                <v-icon>mdi-arrow-up-box</v-icon>
-              </v-btn>
-            </template>
-            <BoxSelect @selectedCall="dialog = false"/>
-          </v-dialog>
-        </v-col>
-        <v-col col=6 v-else>
-          <div id="contract" class="d-flex align-center justify-center">
-           <Contract />
-          </div>
-        </v-col>
-        <v-col cols=3>
-          <v-btn block id="advance-button" class="d-flex align-center justify-center" @click="advanceBoard()">
-            <v-icon>mdi-skip-next</v-icon>
-          </v-btn>
-        </v-col>
+        <template v-if="!tdOpened">
+          <v-col cols=2 v-if="biddingEnded">
+            <v-btn block id="advance-button" class="d-flex align-center justify-center" @click="advanceBoard()">
+              <v-icon>mdi-skip-next</v-icon>
+            </v-btn>
+          </v-col>
+        </template>
+        <template v-if="tdOpened">
+          <v-col cols=2>
+            <v-btn block outlined id="reset-button" class="d-flex align-center justify-center" @click="resetAll()">
+              <v-icon>mdi-nuke</v-icon>
+            </v-btn>
+          </v-col>
+          <v-col cols=4>
+            <v-btn block id="undo-button" class="d-flex align-center justify-center" @click="undo()">
+              <v-icon>mdi-arrow-u-left-top</v-icon>
+            </v-btn>
+          </v-col>
+          <v-col cols=2>
+            <v-btn block id="unwind-button" class="d-flex align-center justify-center" @click="unwindBoard()">
+              <v-icon>mdi-skip-previous</v-icon>
+            </v-btn>
+          </v-col>
+          <v-col cols=2>
+            <v-btn block id="advance-button" class="d-flex align-center justify-center" @click="advanceBoard()">
+              <v-icon>mdi-skip-next</v-icon>
+            </v-btn>
+          </v-col>
+        </template>
       </v-row>
     </v-footer>
   </div>
@@ -42,23 +57,34 @@ import Contract from '@/components/Contract.vue'
 export default {
   name: 'BiddingMain',
   components: {
-    BiddingTable, BoxSelect, Contract
+    BiddingTable,
+    BoxSelect,
+    Contract
   },
   data(){
     return {
-      dialog: false,
+      boxDialog: false,
+      tdOpened: false,
       sideLength: null,
     }
   },
   computed: {
-    ...mapGetters('history', ['contract'])
+    ...mapGetters('history', ['contract']),
+    biddingEnded: function() {
+      return this.contract.bid !== undefined
+    }
   },
   methods: {
     ...mapMutations('sizing', ['changeSideLength']),
-    ...mapMutations('history', ['undo', 'advanceBoard']),
+    ...mapMutations('history', ['undo', 'advanceBoard', 'unwindBoard', 'resetAll']),
     onResize: function(){
-      this.sideLength = (Math.min(window.innerWidth, window.innerHeight * 0.9))
+      this.sideLength = (Math.min(window.innerWidth, window.innerHeight * 0.85))
       this.changeSideLength(this.sideLength)
+    },
+    toggleDialog: function() {
+      if (!this.biddingEnded) {
+        this.boxDialog = true
+      }
     }
   },
   mounted(){
@@ -81,18 +107,23 @@ export default {
   $color-nv: #75ffca;
   $color-current: #eee066;
   $color-noncur: #ced3d4;
-  $color-call: #9ba8eb;
+  $color-unwind: #9ba8eb;
+  $color-td: #fd9621;
+  $color-reset: #ee2222;
 
   #app, #control-footer {
     background-color: $color-background;
     font-family: 'Roboto', sans-serif;
   }
 
+  #td-button {background-color: $color-td;}
   #undo-button {background-color: $color-vul;}
-  #call-button {background-color: $color-call;}
+  #unwind-button {background-color: $color-unwind;}
   #advance-button {background-color: $color-nv;}
+  #reset-button {border: 5px solid $color-reset}
 
-  #undo-button, #call-button, #advance-button, #contract{height: 10vh}
+  #undo-button, #reset-button, #call-button, #unwind-button, #advance-button, #td-button{height: 10vh}
+  #contract{height: 5vh}
 
   #contract, .player-nv, .player-v, .call-choice span, .table-label{
     font-weight: bold;
@@ -144,7 +175,7 @@ export default {
   #contract, .call-choice span, .table-label{font-size: x-large;}
 
   .biddingtable{
-    top: 45%;
+    top: 42.5%;
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: transparent;

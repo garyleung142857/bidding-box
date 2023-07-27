@@ -80,7 +80,7 @@ export default {
   },
   computed: {
     ...mapGetters('sizing', ['sideLength']),
-    ...mapGetters('history', ['curPlayer', 'lastBid', 'canDbl', 'canRdbl']),
+    ...mapGetters('history', ['curPlayer', 'lastBid', 'canDbl', 'canRdbl', 'contract']),
     bidHeight: function(){
       return 0.11 * this.sideLength
     },

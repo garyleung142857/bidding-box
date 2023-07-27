@@ -1,6 +1,7 @@
 <template>
   <div>
-    <template v-if="contract.declarer===undefined">Pass Out</template>
+    <template v-if="contract.bid===undefined">{{ " " }}</template>
+    <template v-else-if="contract.declarer===undefined">Pass Out</template>
     <template v-else>
       <span
         :class="'label-' + this.contract.bid[1]"
