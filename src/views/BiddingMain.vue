@@ -1,7 +1,11 @@
 <template>
   <div v-resize="onResize">
     <BiddingTable @click.native="toggleDialog()" />
-    <v-dialog width="unset" v-model="boxDialog">
+    <v-dialog
+      v-model="boxDialog"
+      width="unset"
+      :transition="false"
+    >
       <BoxSelect @selectedCall="boxDialog = false"/>
     </v-dialog>
     <v-dialog width="unset" v-model="resetDialog">
