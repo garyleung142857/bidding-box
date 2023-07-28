@@ -247,6 +247,7 @@ export default {
     vertical-align: text-bottom;
     border-radius: 3px;
     overflow-y: auto;
+    overflow-x: hidden;
     background-color: $color-noncur !important;
   }
 
@@ -284,7 +285,11 @@ export default {
     transform-origin: bottom left;
   }
 
-  .table-label{transform: rotate(180deg);}
+  .table-label{
+    transform: rotate(180deg);
+    line-height: 1;
+    text-align: center;
+  }
 
   .tablecenter{
     transform: translate(-50%,-50%);

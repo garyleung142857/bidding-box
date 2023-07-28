@@ -1,10 +1,11 @@
 <template>
   <v-card
-    :height="this.sideLength * 0.15"
-    :width="this.sideLength * 0.15"
-    class="d-flex align-center justify-center"
-    :class="this.to_class(this.biddingCall)"
-    v-html="this.to_html(this.biddingCall)"
+    :height="sideLength * 0.16"
+    :width="sideLength * 0.18"
+    class="d-flex align-center justify-end pr-3"
+    :class="to_class(biddingCall)"
+    v-html="to_html(biddingCall)"
+    :elevation="is_special ? 0 : 5"
   >
   </v-card>
 </template>
@@ -25,12 +26,15 @@ export default {
   },
   computed: {
     ...mapGetters('sizing', ['sideLength']),
+    is_special(){
+      return ['A', 'B', 'E'].includes(this.biddingCall)
+    },
   },
   methods: {
     to_html(str){
-      if(['A', 'B', 'E'].includes(str)){return ''}
+      if(this.is_special){return ''}
       if(str in this.pxr){return this.pxr[str]}
-      return str[0] + this.strains[str[1]]
+      return str[0] + '<br>' + this.strains[str[1]]
     },
     to_class(str){
       // for css coloring
