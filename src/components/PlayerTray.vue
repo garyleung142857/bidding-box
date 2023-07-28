@@ -1,6 +1,6 @@
 <template>
   <v-sheet
-    class="playertray"
+    class="playertray pr-10"
     :class="{current: isCurrent}"
     :id="player"
     :width="sideLength * 0.6"
