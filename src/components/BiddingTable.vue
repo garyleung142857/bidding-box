@@ -1,22 +1,20 @@
 <template>
   <v-card
     class="biddingtable"
-    :height="this.sideLength"
-    :width="this.sideLength"
+    :height="sideLength"
+    :width="sideLength"
     flat
     color="transparent"
   >
     <PlayerTray
       player="N"
-      :playerHist="hist_by_players[1]"
-      :sideLength="sideLength"
-      :isCurrent="this.is_current('N')">
+      :playerHist="historyByPlayers[1]"
+      :isCurrent="is_current('N')">
     </PlayerTray>
     <PlayerTray
       player="E"
-      :playerHist="hist_by_players[2]"
-      :sideLength="sideLength"
-      :isCurrent="this.is_current('E')">
+      :playerHist="historyByPlayers[2]"
+      :isCurrent="is_current('E')">
     </PlayerTray>
     <span>
       <v-card
@@ -50,27 +48,25 @@
           :width="sideLength * 0.13"
         >{{player_title('W')}}
         </v-card>
-        <div class="board-num">{{this.boardNum}}</div>
+        <div class="board-num">{{boardNum}}</div>
       </v-card>
     </span>
     <PlayerTray
       player="W"
-      :playerHist="hist_by_players[0]"
-      :sideLength="sideLength"
-      :isCurrent="this.is_current('W')">
+      :playerHist="historyByPlayers[0]"
+      :isCurrent="is_current('W')">
     </PlayerTray>
     <PlayerTray
       player="S"
-      :playerHist="hist_by_players[3]"
-      :sideLength="sideLength"
-      :isCurrent="this.is_current('S')">
+      :playerHist="historyByPlayers[3]"
+      :isCurrent="is_current('S')">
     </PlayerTray>
   </v-card>
 
 </template>
 
 <script>
-// import Call from '@/components/Call.vue'
+import { mapGetters } from 'vuex'
 import PlayerTray from '@/components/PlayerTray.vue'
 
 export default {
@@ -79,13 +75,6 @@ export default {
     // Call
     PlayerTray
   },
-  props: {
-    history: Array,
-    boardNum: Number,
-    curPlayer: String,
-    ended: Boolean,
-    sideLength: Number
-  },
   data(){
     return {
       PLAYERS: ['W', 'N', 'E', 'S'],
@@ -93,42 +82,22 @@ export default {
     }
   },
   computed: {
-    hist_by_players: function(){
-      var hist = [...this.history]
-      var hist_2 = [[], [], [], []]
-      var i = this.boardNum % 4
-      while (hist.length > 0){
-        hist_2[i].push(hist.shift())
-        i = (i + 1) % 4
-      }
-      return hist_2
-    },
-    dealer: function(){
-      return (this.PLAYERS[this.boardNum % 4])
-    },
-    vulerability: function(){
-      var ns = [2, 4, 5, 7, 10, 12, 13, 15]
-      var ew = [3, 4, 6, 7, 9, 10, 13, 16]
-      return {
-        'EW': ew.includes(this.boardNum),
-        'NS': ns.includes(this.boardNum)
-      }
-    }
+    ...mapGetters('sizing', ['sideLength']),
+    ...mapGetters('history', ['dealer', 'boardNum', 'vulerability', 'curPlayer', 'historyByPlayers', 'contract']),
   },
   methods: {
     player_title(player){
-      if(player===this.dealer){
+      if(player === this.dealer){
         return 'Dlr'
-      } else {
-        return player
       }
+      return player
     },
     is_vul(player){
       var vul = ['E', 'W'].includes(player) ? this.vulerability['EW'] : this.vulerability['NS']
       return vul ? 'v' : 'nv'
     },
     is_current(player){
-      return !this.ended && this.curPlayer===player
+      return this.contract.bid === undefined && this.curPlayer === player
     }
   },
 }

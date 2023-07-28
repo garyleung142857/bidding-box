@@ -2,13 +2,13 @@
   <v-sheet
     class="playertray"
     :class="{current: isCurrent}"
-    :id="this.player"
+    :id="player"
     :width="sideLength * 0.6"
     :height="sideLength * 0.35"
   >
     <div class="traycontent">
       <v-row
-        v-for="(callrow, i) in this.hist_2d"
+        v-for="(callrow, i) in hist_2d"
         v-bind:key="i"
         no-gutters justify="center"
       >
@@ -17,10 +17,7 @@
           v-for="(call, j) in callrow"
           v-bind:key="j"
         >
-          <Call
-            :biddingCall="call"
-            :sideLength="sideLength"
-          ></Call>
+          <Call :biddingCall="call" />
         </v-col>
       </v-row>
     </div>
@@ -28,6 +25,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import Call from '@/components/Call.vue'
 
 export default {
@@ -38,25 +36,20 @@ export default {
   props: {
     player: String,  // N / E / S / W
     playerHist: Array,
-    sideLength: Number,
     isCurrent: Boolean
   },
-  data(){
-    return {
-      NCOL: 4
-    }
-  },
   computed: {
-      hist_2d: function(){
+    ...mapGetters('sizing', ['sideLength']),
+    hist_2d: function(){
       var hist = [...this.playerHist]
       var hist_2 = []
       for (let i = 0; i < this.dlr_pos; i++){hist.splice(0, 0, 'B')}  // West will be the first B = buffer
-      while (hist.length % this.NCOL > 0){hist.push('E')}  // multiple of NCOL. E = blank      
-      for (let j = 0; j < hist.length; j = j + this.NCOL){
+      while (hist.length % 4 > 0){hist.push('E')}  // multiple of 6. E = blank      
+      for (let j = 0; j < hist.length; j = j + 4){
         hist_2.push(hist.slice(j, j + 4))
       }
       return hist_2
-    },
+    }
   }
 }
 </script>

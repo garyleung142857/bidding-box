@@ -1,42 +1,106 @@
 <template>
   <div v-resize="onResize">
-    <BiddingTable
-      :history="this.history"
-      :boardNum="this.boardNum"
-      :curPlayer="this.curPlayer"
-      :ended="this.contract.bid != null"
-      :sideLength="this.sideLength"
-    ></BiddingTable>
+    <BiddingTable @click.native="toggleDialog()" />
+    <v-dialog
+      v-model="boxDialog"
+      width="unset"
+      :transition="false"
+    >
+      <BoxSelect @selectedCall="boxDialog = false"/>
+    </v-dialog>
+    <v-dialog width="unset" v-model="resetDialog">
+      <v-card>
+        <v-card-title>
+          Reset All History?
+        </v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="primary"
+            @click="resetDialog = false"
+          >
+            Cancel
+          </v-btn>
+          <v-btn
+            color="error"
+            @click="resetAll(); resetDialog = false"
+          >
+            Reset
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-footer fixed padless id="control-footer">
       <v-row justify="center" no-gutters>
-        <v-col cols=3>
-          <v-btn block id="undo-button" class="d-flex align-center justify-center" @click="undo()">
-            <v-icon>mdi-arrow-u-left-top</v-icon>
+        <v-col cols=12 id="contract">
+          <Contract />
+        </v-col>
+        <v-col :cols="tdOpened ? 2 : biddingEnded ? 10 : 12">
+          <v-btn block id="td-button" class="d-flex align-center justify-center" @click="tdOpened=!tdOpened">
+            TD
           </v-btn>
         </v-col>
-        <v-col col=6 v-if="contract.bid == null">
-          <v-dialog width="unset" v-model="dialog">
-            <template v-slot:activator="{on, attrs}">
-              <v-btn block id="call-button" class="d-flex align-center justify-center" v-bind="attrs" v-on="on">
-                <v-icon>mdi-arrow-up-box</v-icon>
+        <template v-if="tdOpened">
+          <v-col cols=2>
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn 
+                  block id="reset-button" class="d-flex align-center justify-center" 
+                  @click.native="resetDialog=true"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  <v-icon>mdi-nuke</v-icon>
+                </v-btn>
+              </template>
+              <span>Reset</span>
+            </v-tooltip>
+          </v-col>
+          <v-col cols=4>
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  block id="undo-button" class="d-flex align-center justify-center"
+                  @click="undo()"
+                  v-bind="attrs"
+                  v-on="on"  
+                >
+                  <v-icon>mdi-arrow-u-left-top</v-icon>
+                </v-btn>
+              </template>
+              <span> Undo last call </span>
+            </v-tooltip>
+          </v-col>
+          <v-col cols=2>
+            <v-tooltip top>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn 
+                  block id="unwind-button" class="d-flex align-center justify-center" 
+                  @click="unwindBoard()"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  <v-icon>mdi-skip-previous</v-icon>
+                </v-btn>
+              </template>
+              <span> Nav to previous board </span>
+            </v-tooltip>  
+          </v-col>
+        </template>
+        <v-col cols=2 v-if="biddingEnded || tdOpened">
+          <v-tooltip top>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn 
+                block id="advance-button" class="d-flex align-center justify-center" 
+                @click="advanceBoard()"
+                v-bind="attrs"
+                v-on="on"
+              >
+                <v-icon>mdi-skip-next</v-icon>
               </v-btn>
             </template>
-            <BoxSelect
-              @selectCall="addHistory($event); dialog=false"
-              :biddingState="biddingState"
-              :sideLength="this.sideLength"
-            ></BoxSelect>
-          </v-dialog>
-        </v-col>
-        <v-col col=6 v-else>
-          <div id="contract" class="d-flex align-center justify-center">
-           <Contract :contract="contract" :vul="is_vul(contract.declarer)"></Contract>
-          </div>
-        </v-col>
-        <v-col cols=3>
-          <v-btn block id="advance-button" class="d-flex align-center justify-center" @click="advanceBoard()">
-            <v-icon>mdi-skip-next</v-icon>
-          </v-btn>
+            <span>Nav to next board</span>
+          </v-tooltip>
         </v-col>
       </v-row>
     </v-footer>
@@ -44,6 +108,7 @@
 </template>
 
 <script>
+import { mapGetters, mapMutations } from 'vuex'
 import BiddingTable from '@/components/BiddingTable.vue'
 import BoxSelect from '@/components/BoxSelect.vue'
 import Contract from '@/components/Contract.vue'
@@ -51,109 +116,36 @@ import Contract from '@/components/Contract.vue'
 export default {
   name: 'BiddingMain',
   components: {
-    BiddingTable, BoxSelect, Contract
+    BiddingTable,
+    BoxSelect,
+    Contract
   },
   data(){
     return {
-      PLAYERS: ['W', 'N', 'E', 'S'],
-      history: [],
-      boardNum: 1,
-      dialog: false,
+      boxDialog: false,
+      tdOpened: false,
+      resetDialog: false,
       sideLength: null,
     }
   },
   computed: {
-    curPlayer: function(){
-      return this.PLAYERS[(this.boardNum + this.history.length) % 4]
-    },
-    biddingState: function(){
-      var i = this.history.length
-      var lastBid = ''
-      var lastBidPos = -1
-      var rdblPos = -1
-      var dblPos = -1
-      var contract = {
-        bid: null,
-        declarer: null,
-        pxr: null
-      }
-      while (i-- && lastBidPos < 0){
-        var curCall = this.history[i]
-        if (curCall !== 'P'){
-          if (curCall === 'R'){rdblPos = i}
-          else if (curCall === 'X'){dblPos = i}
-          else {
-            lastBid = curCall
-            lastBidPos = i
-          }
-        }
-      }
-      var canDbl = (lastBidPos >= 0 && dblPos < 0 && rdblPos < 0 && (this.history.length - lastBidPos) % 2 === 1)
-      var canRdbl = (lastBidPos >= 0 && rdblPos < 0 && dblPos >= 0 && (this.history.length - dblPos) % 2 === 1)
-      // detect if bidding has ended
-      i = this.history.length
-      if (this.history.length >= 4){
-        if (this.history[i-1] === 'P' && this.history[i-2] === 'P' && this.history[i-3] === 'P' ){
-          if (this.history[i-4] === 'P'){
-            contract.bid = 'PO'
-          } else {
-            contract.bid = lastBid
-            for (let j = lastBidPos % 2; j <= lastBidPos; j+=2){
-              if(this.strain_of_call(this.history[j]) === this.strain_of_call(lastBid)){
-                contract.declarer = this.PLAYERS[(this.boardNum + j) % 4]
-                break
-              }
-            }
-            if (rdblPos >= 0){
-              contract.pxr = 'R'
-            } else if (dblPos >= 0){
-              contract.pxr = 'X'
-            } else {
-              contract.pxr = 'P'
-            }
-          }
-        }
-      }
-      return [this.curPlayer, lastBid, canDbl, canRdbl, contract]
-    },
-    contract: function(){
-      return this.biddingState[4]
+    ...mapGetters('history', ['contract']),
+    biddingEnded: function() {
+      return this.contract.bid !== undefined
     }
   },
   methods: {
+    ...mapMutations('sizing', ['changeSideLength']),
+    ...mapMutations('history', ['undo', 'advanceBoard', 'unwindBoard', 'resetAll']),
     onResize: function(){
-      var len_of_largest_sq = Math.min(window.innerWidth, window.innerHeight * 0.9)
-      this.sideLength = len_of_largest_sq
+      this.sideLength = (Math.min(900, window.innerWidth, window.innerHeight * 0.85))
+      this.changeSideLength(this.sideLength)
     },
-    addHistory: function(call){
-      this.history.push(call)
-    },
-    advanceBoard: function(){
-      this.history = []
-      if(this.boardNum === 16){
-        this.boardNum = 0
+    toggleDialog: function() {
+      if (!this.biddingEnded) {
+        this.boxDialog = true
       }
-      this.boardNum += 1
-    },
-    undo: function(){
-      if (this.history.length > 0){
-        this.history.pop()
-      }
-    },
-    is_vul(player){
-      if (['E', 'W'].includes(player)){
-        return [3, 4, 6, 7, 9, 10, 13, 16].includes(player)
-      } else {
-        return [2, 4, 5, 7, 10, 12, 13, 15].includes(player)
-      }
-    },
-    strain_of_call(call){
-      if(call.length === 1){
-        return ''
-      } else {
-        return call[1]
-      }
-    },
+    }
   },
   mounted(){
     this.onResize()
@@ -175,18 +167,30 @@ export default {
   $color-nv: #75ffca;
   $color-current: #eee066;
   $color-noncur: #ced3d4;
-  $color-call: #9ba8eb;
+  $color-unwind: #9ba8eb;
+  $color-td: #fd9621;
+  $color-reset: #ee2222;
+
+  html{
+    background-color: $color-background;
+  }
 
   #app, #control-footer {
     background-color: $color-background;
     font-family: 'Roboto', sans-serif;
+    max-width: 1000px;
+    min-width: 400px;
+    margin: auto;
   }
 
+  #td-button {background-color: $color-td;}
   #undo-button {background-color: $color-vul;}
-  #call-button {background-color: $color-call;}
+  #unwind-button {background-color: $color-unwind;}
   #advance-button {background-color: $color-nv;}
+  #reset-button {background-color: $color-current;}
 
-  #undo-button, #call-button, #advance-button, #contract{height: 10vh}
+  #undo-button, #reset-button, #call-button, #unwind-button, #advance-button, #td-button{height: 10vh}
+  #contract{height: 5vh}
 
   #contract, .player-nv, .player-v, .call-choice span, .table-label{
     font-weight: bold;
@@ -238,7 +242,7 @@ export default {
   #contract, .call-choice span, .table-label{font-size: x-large;}
 
   .biddingtable{
-    top: 45%;
+    top: 42.5%;
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: transparent;
@@ -250,6 +254,7 @@ export default {
     vertical-align: text-bottom;
     border-radius: 3px;
     overflow-y: auto;
+    overflow-x: hidden;
     background-color: $color-noncur !important;
   }
 
@@ -287,7 +292,11 @@ export default {
     transform-origin: bottom left;
   }
 
-  .table-label{transform: rotate(180deg);}
+  .table-label{
+    transform: rotate(180deg);
+    line-height: 1;
+    text-align: center;
+  }
 
   .tablecenter{
     transform: translate(-50%,-50%);
