@@ -21,7 +21,7 @@ export default {
     return {
       levels: ['1', '2', '3', '4', '5', '6', '7'],
       strains: {'N': 'N', 'S': '&#9828;', 'H': '&#9825;', 'D': '&#9826;', 'C': '&#9831;'},
-      pxr : {'P': 'P', 'X': 'X', 'R': 'XX'}
+      pxr : {'P': 'P', 'X': 'X', 'R': 'X <br> X'}
     }
   },
   computed: {
