@@ -138,7 +138,7 @@ export default {
     ...mapMutations('sizing', ['changeSideLength']),
     ...mapMutations('history', ['undo', 'advanceBoard', 'unwindBoard', 'resetAll']),
     onResize: function(){
-      this.sideLength = (Math.min(window.innerWidth, window.innerHeight * 0.85))
+      this.sideLength = (Math.min(900, window.innerWidth, window.innerHeight * 0.85))
       this.changeSideLength(this.sideLength)
     },
     toggleDialog: function() {
@@ -171,9 +171,16 @@ export default {
   $color-td: #fd9621;
   $color-reset: #ee2222;
 
+  html{
+    background-color: $color-background;
+  }
+
   #app, #control-footer {
     background-color: $color-background;
     font-family: 'Roboto', sans-serif;
+    max-width: 1000px;
+    min-width: 400px;
+    margin: auto;
   }
 
   #td-button {background-color: $color-td;}
