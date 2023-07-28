@@ -72,14 +72,7 @@ import PlayerTray from '@/components/PlayerTray.vue'
 export default {
   name: 'BiddingTable',
   components: {
-    // Call
     PlayerTray
-  },
-  data(){
-    return {
-      PLAYERS: ['W', 'N', 'E', 'S'],
-      player_names: {'W': 'West', 'N': 'North', 'E': 'East', 'S': 'South'},
-    }
   },
   computed: {
     ...mapGetters('sizing', ['sideLength']),
