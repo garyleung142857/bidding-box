@@ -100,7 +100,7 @@ const getters = {
     }
     if (bs.rdblPos !== undefined) {
       c.pxr = 'R'
-    } else if (bs.rdblPos !== undefined) {
+    } else if (bs.dblPos !== undefined) {
       c.pxr = 'X'
     } else {
       c.pxr = 'P'
