@@ -166,7 +166,7 @@ export default {
   $color-vul: #f56d6d;
   $color-nv: #75ffca;
   $color-current: #eee066;
-  $color-noncur: #96a4a8;
+  $color-noncur: #acbabd;
   $color-unwind: #9ba8eb;
   $color-td: #fd9621;
   $color-reset: #ee2222;
