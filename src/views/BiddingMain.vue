@@ -157,16 +157,16 @@ export default {
   @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap');
 
   $color-heart: #af3535;
-  $color-spade: #2f3b80;
+  $color-spade: #2b3b94;
   $color-diamond: #dd9b44;
   $color-club: #5d8b47;
   $color-nt: #302f46;
-  $color-background: #f3f3f3;
-  $color-light: #fcfcfc;
-  $color-vul: #f37272;
+  $color-background: #e0e0e0;
+  $color-light: #f0f0f0;
+  $color-vul: #f56d6d;
   $color-nv: #75ffca;
   $color-current: #eee066;
-  $color-noncur: #ced3d4;
+  $color-noncur: #acbabd;
   $color-unwind: #9ba8eb;
   $color-td: #fd9621;
   $color-reset: #ee2222;

@@ -1,6 +1,6 @@
 <template>
   <v-sheet
-    class="playertray"
+    class="playertray pr-10"
     :class="{current: isCurrent}"
     :id="player"
     :width="sideLength * 0.6"
@@ -44,7 +44,7 @@ export default {
       var hist = [...this.playerHist]
       var hist_2 = []
       for (let i = 0; i < this.dlr_pos; i++){hist.splice(0, 0, 'B')}  // West will be the first B = buffer
-      while (hist.length % 4 > 0){hist.push('E')}  // multiple of 6. E = blank      
+      while (hist.length % 4 > 0){hist.push('E')}  // multiple of 4. E = blank      
       for (let j = 0; j < hist.length; j = j + 4){
         hist_2.push(hist.slice(j, j + 4))
       }

@@ -4,38 +4,28 @@
     <template v-else-if="contract.declarer===undefined">Pass Out</template>
     <template v-else>
       <span
-        :class="'label-' + this.contract.bid[1]"
-        v-html="this.bid_to_html(this.contract.bid)"
+        :class="'label-' + contract.bid[1]"
+        v-html="bid_html"
       ></span>
-      <span>{{this.to_pxr(this.contract.pxr)}}</span>
-      <span style="margin-left: 0.5em"> by {{this.contract.declarer}}</span>
+      <span>{{pxr}}</span>
+      <span style="margin-left: 0.5em"> by {{contract.declarer}}</span>
     </template>
   </div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
+
+const strains = {'N': 'N', 'S': '&#9828;', 'H': '&#9825;', 'D': '&#9826;', 'C': '&#9831;'} 
+const pxr_map = {'P': '', 'X': 'X', 'R': 'XX'}
 export default {
   name: 'Contract',
-  data(){
-    return {
-      strains: {'N': 'N', 'S': '&#9828;', 'H': '&#9825;', 'D': '&#9826;', 'C': '&#9831;'},
-    }
-  },
   computed: {
     ...mapGetters('history', ['contract']),
-  },
-  methods: {
-    bid_to_html(str){
-      return str[0] + this.strains[str[1]]
+    pxr(){
+      return pxr_map[this.contract.pxr]
     },
-    to_pxr(str){
-      if (str === 'P'){
-        return ''
-      } else if (str === 'X') {
-        return 'X'
-      } else {
-        return 'XX'
-      }
+    bid_html(){
+      return this.contract.bid[0] + strains[this.contract.bid[1]]
     }
   }
 }
