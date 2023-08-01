@@ -253,8 +253,7 @@ export default {
     padding: 3px;
     vertical-align: text-bottom;
     border-radius: 3px;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: auto;;
     background-color: $color-noncur !important;
   }
 
