@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/bidding-box/precache-manifest.4497dc0abd081384ae435b82ec1c8fdb.js"
+  "/bidding-box/precache-manifest.32dd4e4e4991244fe77ca06fc848387f.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "bidding-box"});
