@@ -197,7 +197,10 @@ export default {
     max-width: unset;
   }
 
-  .box-bids {background-color: $color-background;}
+  .box-bids {
+    background-color: $color-background;
+    backface-visibility: hidden;
+  }
 
   .label-N {color: $color-nt !important;}
   .label-S {color: $color-spade !important;}
