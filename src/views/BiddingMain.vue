@@ -190,7 +190,6 @@ export default {
   #reset-button {background-color: $color-current;}
 
   #undo-button, #reset-button, #call-button, #unwind-button, #advance-button, #td-button{height: 10vh}
-  #contract{height: 5vh}
 
   #contract, .player-nv, .player-v, .call-choice span, .table-label{
     font-weight: bold;
@@ -242,7 +241,17 @@ export default {
 
   .call-choice {padding: 0px !important;}
 
-  #contract, .call-choice span, .table-label{font-size: x-large;}
+  @media screen and (max-width: 600px) {
+    #contract, .call-choice span, .table-label{
+      font-size: 30px
+    }
+  }
+
+  @media screen and (min-width: 601px) {
+    #contract, .call-choice span, .table-label{
+      font-size: 50px
+    }
+  }
 
   .biddingtable{
     top: 42.5%;
