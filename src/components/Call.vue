@@ -12,7 +12,7 @@
 <script>
 import { mapGetters } from 'vuex'
 
-const strains = {'N': 'N', 'S': '&#9828;', 'H': '&#9825;', 'D': '&#9826;', 'C': '&#9831;'}
+const strains = {'N': 'N', 'S': '&spades;', 'H': '&hearts;', 'D': '&diams;', 'C': '&clubs;'}
 const pxr = {'P': 'P', 'X': 'X', 'R': 'X <br> X'}
 
 export default {

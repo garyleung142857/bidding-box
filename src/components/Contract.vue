@@ -15,7 +15,7 @@
 <script>
 import { mapGetters } from 'vuex'
 
-const strains = {'N': 'N', 'S': '&#9828;', 'H': '&#9825;', 'D': '&#9826;', 'C': '&#9831;'} 
+const strains = {'N': 'N', 'S': '&spades;', 'H': '&hearts;', 'D': '&diams;', 'C': '&clubs;'} 
 const pxr_map = {'P': '', 'X': 'X', 'R': 'XX'}
 export default {
   name: 'Contract',

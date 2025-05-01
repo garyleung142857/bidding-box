@@ -154,8 +154,6 @@ export default {
 </script>
 
 <style lang="scss">
-  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap');
-
   $color-heart: #af3535;
   $color-spade: #2b3b94;
   $color-diamond: #dd9b44;
@@ -177,7 +175,6 @@ export default {
 
   #app, #control-footer {
     background-color: $color-background;
-    font-family: 'Roboto', sans-serif;
     max-width: 1000px;
     min-width: 400px;
     margin: auto;
@@ -192,7 +189,7 @@ export default {
   #undo-button, #reset-button, #call-button, #unwind-button, #advance-button, #td-button{height: 10vh}
 
   #contract, .player-nv, .player-v, .call-choice span, .table-label{
-    font-weight: bold;
+    font-weight: 900;
     max-width: unset;
   }
 
@@ -202,10 +199,22 @@ export default {
   }
 
   .label-N {color: $color-nt !important;}
-  .label-S {color: $color-spade !important;}
-  .label-H {color: $color-heart !important;}
-  .label-D {color: $color-diamond !important;}
-  .label-C {color: $color-club !important;}
+  .label-S {
+    color: transparent !important;
+    text-shadow: 0 0 0 $color-spade;
+  }
+  .label-H {
+    color: transparent !important;
+    text-shadow: 0 0 0 $color-heart;
+  }
+  .label-D {
+    color: transparent !important;
+    text-shadow: 0 0 0 $color-diamond;
+  }
+  .label-C {
+    color: transparent !important;
+    text-shadow: 0 0 0 $color-club;
+  }
 
   .label-P, .label-X, .label-R {color: $color-background !important;}
 
@@ -224,7 +233,10 @@ export default {
   #call-X {background-color: $color-heart;}
   #call-R {background-color: $color-spade;}
 
-  button[disabled="disabled"] span {color: $color-background !important;}
+  button[disabled="disabled"] span {
+    color: transparent !important;
+    text-shadow: 0 0 0 $color-background;
+  }
 
   .bid-choice, .normal-label {background-color: $color-light !important;}
 
