@@ -191,7 +191,6 @@ export default {
   #contract, .player-nv, .player-v, .call-choice span, .table-label{
     font-weight: 900;
     max-width: unset;
-    font-display: block;
   }
 
   .box-bids {
@@ -255,23 +254,29 @@ export default {
   .call-choice {padding: 0px !important;}
 
   @media screen and (max-width: 600px) {
-    #contract, .call-choice span, .table-label{
+    #contract, .call-choice span, .table-label, .board-num{
       font-size: 30px;
-      font-display: block;
+    }
+    .name-tag {
+      font-size: 20px;
     }
   }
 
   @media screen and (min-width: 601px) and (max-width: 900px) {
-    #contract, .call-choice span, .table-label{
+    #contract, .call-choice span, .table-label, .board-num{
       font-size: 40px;
-      font-display: block;
+    }
+    .name-tag {
+      font-size: 25px;
     }
   }
 
   @media screen and (min-width: 901px) {
-    #contract, .call-choice span, .table-label{
+    #contract, .call-choice span, .table-label, .board-num{
       font-size: 50px;
-      font-display: block;
+    }
+    .name-tag {
+      font-size: 30px;
     }
   }
 
@@ -367,7 +372,6 @@ export default {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: x-large;
     font-weight: bold;
   }
 
