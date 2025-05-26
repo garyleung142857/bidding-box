@@ -270,7 +270,7 @@ export default {
     }
   }
 
-  @media screen and (min-width: 601px) {
+  @media screen and (orientation: landscape) and (min-width: 601px) {
     #contract, .call-choice span, .table-label, .board-num{
       font-size: 40px;
     }
