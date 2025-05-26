@@ -270,7 +270,7 @@ export default {
     }
   }
 
-  @media screen and (min-width: 601px) and (max-width: 900px) {
+  @media screen and (min-width: 601px) {
     #contract, .call-choice span, .table-label, .board-num{
       font-size: 40px;
     }
@@ -279,7 +279,7 @@ export default {
     }
   }
 
-  @media screen and (min-width: 901px) {
+    @media screen and (orientation: portrait) and (min-width: 601px) {
     #contract, .call-choice span, .table-label, .board-num{
       font-size: 50px;
     }
