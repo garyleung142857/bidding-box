@@ -176,7 +176,6 @@ export default {
   #app, #control-footer {
     background-color: $color-background;
     max-width: 1000px;
-    min-width: 400px;
     margin: auto;
   }
 
