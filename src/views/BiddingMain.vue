@@ -191,6 +191,7 @@ export default {
   #contract, .player-nv, .player-v, .call-choice span, .table-label{
     font-weight: 900;
     max-width: unset;
+    font-display: block;
   }
 
   .box-bids {
@@ -255,13 +256,22 @@ export default {
 
   @media screen and (max-width: 600px) {
     #contract, .call-choice span, .table-label{
-      font-size: 30px
+      font-size: 30px;
+      font-display: block;
     }
   }
 
-  @media screen and (min-width: 601px) {
+  @media screen and (min-width: 601px) and (max-width: 900px) {
     #contract, .call-choice span, .table-label{
-      font-size: 50px
+      font-size: 40px;
+      font-display: block;
+    }
+  }
+
+  @media screen and (min-width: 901px) {
+    #contract, .call-choice span, .table-label{
+      font-size: 50px;
+      font-display: block;
     }
   }
 
