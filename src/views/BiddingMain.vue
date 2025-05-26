@@ -253,7 +253,16 @@ export default {
 
   .call-choice {padding: 0px !important;}
 
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width: 450px) {
+    #contract, .call-choice span, .table-label, .board-num{
+      font-size: 25px;
+    }
+    .name-tag {
+      font-size: 15px;
+    }
+  }
+
+  @media screen and (min-width: 451px) and (max-width: 600px) {
     #contract, .call-choice span, .table-label, .board-num{
       font-size: 30px;
     }
