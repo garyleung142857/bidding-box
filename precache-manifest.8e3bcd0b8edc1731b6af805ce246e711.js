@@ -1,7 +1,7 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "9f720c4a0122ba762b57",
-    "url": "/bidding-box/css/app.9f7221a8.css"
+    "revision": "835e16e3b093bfe921c7",
+    "url": "/bidding-box/css/app.88edb0aa.css"
   },
   {
     "revision": "a72de398aa82d1974102",
@@ -452,12 +452,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/bidding-box/fonts/noto-sans-hk-vietnamese-wght-normal.c07f75d3.woff2"
   },
   {
-    "revision": "c7761b89b1607103a59ebca3ad106eda",
+    "revision": "95a86860a81f6ce9c97b1f87f247adf5",
     "url": "/bidding-box/index.html"
   },
   {
-    "revision": "9f720c4a0122ba762b57",
-    "url": "/bidding-box/js/app.70257355.js"
+    "revision": "835e16e3b093bfe921c7",
+    "url": "/bidding-box/js/app.9411be53.js"
   },
   {
     "revision": "a72de398aa82d1974102",
