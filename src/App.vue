@@ -24,4 +24,7 @@ export default {
   user-select: none;
 }
 
+.v-application--wrap {
+  min-height: 100dvh !important;
+}
 </style>
